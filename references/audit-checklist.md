@@ -1,81 +1,31 @@
 # Delegate And Audit Checklist
 
-## Before spawning
+## Before spawn
 
-- Confirm the user explicitly asked for delegation, sub-agents, parallel agent work, or an independent worker/reviewer pass.
-- Identify the parent-owned critical path.
-- Identify the helper-owned sidecar task.
-- Confirm write scopes are disjoint.
-- If root cause or ownership is unclear, do local discovery first or spawn an `explorer` for one precise read-only question.
-- Choose `worker` for code changes and `explorer` for precise read-only questions.
-- Omit model/settings overrides unless the user requested them or the task clearly needs them.
-- Set exact wait values: 90 seconds/5 minutes for tiny read-only work, 5/15 minutes for small patches, 10/30 minutes for medium implementation or audit, and up to 20/60 minutes for large user-requested slices.
+- Confirm the user explicitly asked for delegation or an independent pass.
+- Define the helper-owned scope and a different parent-owned next action.
+- Confirm write scopes are disjoint; otherwise do local discovery first.
+- Create a one-line controller record: helper id, scope, first/total budget, and state.
+- Use `fork_turns: "none"` only with a brief containing all applicable user, repository, AGENTS.md, and skill instructions; otherwise use the smallest safe context-bearing fork.
+- Tell workers not to revert unrelated work or spawn sub-agents.
+- Target `followup_task` only at a recorded child, never the current or root agent.
 
-## Helper brief
+## While active
 
-Include:
+- Do only non-overlapping parent work.
+- When idle or blocked on the result, use one bounded event wait; do not short-poll.
+- After a timeout or unexpected silence, use `list_agents` and update the record.
+- Within budget: continue parent work or wait again.
+- Past budget/off-scope: request a concise handoff with `followup_task`.
+- No useful handoff: interrupt if available, reclaim the scope, and mark it reclaimed.
+- Never give the user a final handoff with a relevant helper unreconciled.
 
-- task goal
-- owned files/modules or exact read-only question
-- parent-owned work to avoid duplication
-- constraints and non-goals
-- required commands/checks
-- current docs/source requirements
-- wait budget
-- partial-handoff instruction if blocked
+## Audit before acceptance
 
-Ask the helper to return:
-
-- changed files or findings
-- root cause or rationale
-- commands run and results
-- tests/checks passed, failed, or skipped with reasons
-- assumptions
-- remaining risks
-- knowledge cutoff
-- exact docs, release notes, URLs, or source files consulted
-
-For coding workers, state: "You are not alone in the codebase. Do not revert unrelated edits. Adapt to existing changes."
-
-## Waiting
-
-- Treat `spawn_agent` returning an id as harness-level acceptance.
-- Use `wait_agent` only when the result is needed.
-- Prefer waits measured in minutes, not second-scale polls.
-- Treat an empty timeout as "not complete yet", not as failure.
-- Continue non-overlapping local work while helpers run.
-- Reading the same files for context or audit is allowed; duplicating the helper's implementation is not.
-- Interrupt only when the helper is wrong-scope, past budget, or needs to hand off partial progress now.
-- Close helpers after acceptance, rejection, or reclaim.
-
-## Caller audit
-
-- Read the helper output.
-- Inspect changed files and diff.
-- Verify root cause/rationale.
-- Check scope boundaries and unrelated edits.
-- Check edge cases and error handling.
-- Rerun relevant checks locally.
-- Compare to current official docs when current behavior matters.
-
-## Python checks
-
-Use repo commands when available; otherwise prefer:
-
-- `ruff check`
-- `ruff format --check`
-- `basedpyright`
-- relevant unit tests
-- integration tests when services or persistence are involved
-- E2E tests when browser flows are involved
-
-## Reject conditions
-
-- vague result
-- missing changed paths/findings
-- skipped tests without reason
-- stale or missing current docs when needed
-- symptom-hiding fix
-- writes outside ownership
-- unrelated revert
-- parent cannot defend the change in review
+- Read the report, changed paths, and diff.
+- Compare behavior and scope with the brief.
+- Verify root cause, edge cases, errors, and unrelated changes.
+- Run relevant repository checks locally, or state why not.
+- Check current official sources when current behavior matters.
+- Require concrete, file-and-line evidence from review helpers.
+- Send precise failed checks or findings back for a scoped repair; re-audit the repair.
