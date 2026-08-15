@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delegate and Audit"
+  short_description: "Reliable sub-agent delegation and audit."
+  default_prompt: "Use $delegate-and-audit to delegate bounded work to sub-agents, wait with sane budgets, and audit results before accepting them."
