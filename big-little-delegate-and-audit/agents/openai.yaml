@@ -1,0 +1,4 @@
+interface:
+  display_name: "Big Little Delegate and Audit"
+  short_description: "Sol audits short Luna xhigh worker cycles."
+  default_prompt: "Use $big-little-delegate-and-audit so 5.6 Sol fills agent slots with short 5.6 Luna xhigh tasks, verifies changeable facts with current evidence, and continuously audits."
