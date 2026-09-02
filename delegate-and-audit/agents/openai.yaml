@@ -1,4 +1,4 @@
 interface:
   display_name: "Delegate and Audit"
   short_description: "Own delegation through monitoring and audit."
-  default_prompt: "Use $delegate-and-audit to delegate bounded work, verify changeable facts with current evidence, reconcile every helper, and audit results before acceptance."
+  default_prompt: "Use $delegate-and-audit to delegate bounded one-shot work, retire every helper after its handoff, verify current evidence, and audit before acceptance."

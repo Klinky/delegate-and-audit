@@ -6,9 +6,12 @@
 - Define the helper-owned scope and a different parent-owned next action.
 - Confirm write scopes are disjoint; otherwise do local discovery first.
 - Create a one-line controller record: helper id, scope, first/total budget, and state.
-- Use `fork_turns: "none"` only with a brief containing all applicable user, repository, AGENTS.md, and skill instructions; otherwise use the smallest safe context-bearing fork.
+- Keep context low: prefer a self-contained `fork_turns: "none"` brief for one microtask; otherwise use the smallest positive safe fork, never full history for convenience.
+- Pass the dispatch gate before spawning: one finite outcome, exact in/out boundaries, current inputs and dependencies, defined output, acceptance checks, cycle budget, and stop condition.
+- If the task is a feature, repository-wide review, broad refactor, or open-ended investigation, decompose it into independently auditable slices first; never make one helper own the project.
 - Tell workers not to revert unrelated work or spawn subagents.
-- Target `followup_task` only at a recorded child, never the current or root agent.
+- State the one-shot lifecycle: one assignment, one handoff, then retirement; never reuse an agent id.
+- Target first value in 2–5 minutes and handoff in 5–10 minutes; use 10 minutes as the ordinary hard stop.
 
 ## Tools and freshness
 
@@ -26,8 +29,9 @@
 - When idle or blocked on the result, use one bounded event wait; do not short-poll.
 - After a timeout or unexpected silence, use `list_agents` and update the record.
 - Within budget: continue parent work or wait again.
-- Past budget/off-scope: request a concise handoff with `followup_task`.
-- No useful handoff: interrupt if available, reclaim the scope, and mark it reclaimed.
+- On completion: harvest the report and shared changes, terminate/interrupt or permanently retire the helper, then audit.
+- Past budget/off-scope: interrupt and retire; preserve useful artifacts and split the remainder.
+- Never use `followup_task` to reactivate a worker. A repair or continuation always gets a fresh agent with failed checks, current state, and a smaller scope.
 - Never give the user a final handoff with a relevant helper unreconciled.
 
 ## Audit before acceptance
@@ -38,4 +42,4 @@
 - Run relevant repository checks locally, or state why not.
 - Check installed or locked versions and current primary official sources for every material changeable assumption.
 - Require concrete, file-and-line evidence from review helpers.
-- Send precise failed checks or findings back for a scoped repair; re-audit the repair.
+- Spawn a fresh agent for each scoped repair, provide precise failed checks and added context, retire it after one handoff, and re-audit.

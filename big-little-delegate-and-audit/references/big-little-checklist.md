@@ -14,8 +14,11 @@
 - Set `reasoning_effort: "xhigh"` (Extra High).
 - Set `fork_turns: "none"` and make the brief self-contained, or use the smallest positive bounded fork when required; never use `"all"` with the model override.
 - Include exact ownership, constraints, commands, deliverables, and no-sub-delegation instruction.
+- Pass the slice gate before spawning: one finite outcome, exact in/out boundaries, current inputs and dependencies, defined output, acceptance checks, cycle budget, and stop condition.
+- Keep project ownership with Sol. Turn features, repository-wide reviews, broad refactors, and open-ended investigations into successive independently auditable slices.
+- State that this is the agent's only assignment and it will be retired immediately after one handoff.
 - Tell workers not to revert unrelated edits.
-- Target a first concrete checkpoint in 2–5 minutes and handoff in 5–10 minutes unless a known command is inherently slow.
+- Target a first concrete checkpoint in 2–5 minutes and handoff in 5–10 minutes; use 10 minutes as the ordinary hard stop and prefer Sol for known slow commands.
 - Split any ordinary assignment likely to churn for 20–30 minutes without a useful intermediate result.
 
 ## Tools and freshness
@@ -32,11 +35,11 @@
 - Fill all useful helper slots immediately and keep a ready queue for successive waves.
 - Sol does only non-overlapping decomposition, orchestration, rolling audit, integration planning, and validation setup.
 - Process the first arriving checkpoint/completion; do not wait for a whole cohort.
-- Audit each result while other helpers continue, then immediately refill its slot.
+- Harvest each result, immediately terminate/interrupt or permanently retire that agent id, audit while others continue, then refill with a new agent.
 - Wait across the active roster with bounded event waits; do not short-poll each helper.
 - Reconcile silence with `list_agents`.
-- Request the smallest useful handoff when a helper exceeds its feedback window or scope; split the remainder.
-- Interrupt and reclaim unusable work explicitly.
+- Interrupt and retire a helper that exceeds its feedback window or scope; preserve useful artifacts and split the remainder.
+- Never reuse an agent or call `followup_task` on it. Give continuations and repairs to a fresh agent with current state, failed checks, and more precise detail.
 - Give the user concrete milestone feedback and surface direction-changing ambiguity early.
 - Never hand off to the user with a relevant helper unreconciled.
 
@@ -47,4 +50,4 @@
 - Run relevant checks locally or explain why not.
 - Validate integration boundaries across worker slices.
 - Check installed or locked versions and current primary official sources for every material changeable assumption.
-- Send concrete findings for repair and re-audit the result.
+- Spawn a fresh agent for each repair, retire it after one handoff, and re-audit the result.

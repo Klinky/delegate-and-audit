@@ -1,6 +1,6 @@
 ---
 name: big-little-delegate-and-audit
-description: "Use only for an explicitly requested Big Little or Sol/Luna workflow: gpt-5.6-sol orchestrates and audits short parallel gpt-5.6-luna xhigh slices with current-source freshness checks. Do not use for generic delegation."
+description: "Use only for an explicitly requested Big Little or Sol/Luna xhigh workflow: gpt-5.6-sol orchestrates and audits short parallel one-shot gpt-5.6-luna xhigh slices with current-source checks. Do not use for generic or medium-fast delegation."
 ---
 
 # Big Little Delegate And Audit
@@ -15,9 +15,10 @@ Use a large controller and many small executors: the `gpt-5.6-sol` parent owns d
 - Because a model override cannot use a full-history fork, set `fork_turns: "none"` and provide a self-contained brief. If the harness accepts a positive bounded fork and task context genuinely requires it, use the smallest positive value instead. Never use `fork_turns: "all"`.
 - Sol performs the authoritative audit itself. A Luna helper may collect evidence or offer a second opinion, but its report never replaces the parent audit gate.
 - Sol and every Luna helper treat model memory as a source of hypotheses, never as proof that changeable behavior is current.
-- Workers do not spawn subagents. The Sol parent owns the complete roster and all follow-ups.
+- Workers do not spawn subagents. The Sol parent owns the complete roster and lifecycle.
+- Every Luna helper is one-shot. After Sol takes its completed or partial handoff, Sol terminates, interrupts, closes, or permanently retires that agent id. Never reactivate it with `followup_task`, never assign it a related slice, and never reuse it because its context seems convenient.
 - Once a worker owns a write scope, the parent and other workers do not edit that scope. Reclaim it only after failure, cancellation, or handoff.
-- Reconcile every helper before the user handoff: accept after audit, request a scoped repair, reject, or explicitly reclaim its scope.
+- Reconcile every helper before the user handoff: harvest its work, retire it, then accept, reject, reclaim, or create a fresh replacement.
 - Fill every available helper slot with useful work as soon as independent slices exist. Do not hold capacity in reserve for hypothetical later work.
 - Maximize useful parallelism, not duplicate or conflicting effort. Never create agents solely to inflate the count.
 
@@ -25,11 +26,17 @@ Use a large controller and many small executors: the `gpt-5.6-sol` parent owns d
 
 Do a fast initial pass, build a queue of small independent slices, then dispatch up to the harness's maximum concurrent capacity. Keep enough ready work queued to refill a slot immediately when a helper finishes. If write ownership is not yet clear, use the open slots for precise read-only exploration, interface mapping, test discovery, risk checks, or current-source verification that will unlock the next implementation wave.
 
-Shape each slice around one concrete, independently checkable outcome. Aim for a first useful checkpoint in roughly 2–5 minutes and a complete handoff in roughly 5–10 minutes. These are feedback targets, not timeouts for inherently slow builds or tests. If an ordinary assignment is likely to consume 20–30 minutes without an intermediate result, split it before dispatch. Do not give one worker an entire feature, broad refactor, or whole-repository review when it can be divided by file, interface, behavior, test case, or question.
+### Mandatory slice gate
+
+Do not spawn a Luna worker until its slice has one finite outcome, exact in-scope and out-of-scope boundaries, the minimum current inputs and completed dependencies, a defined deliverable, objective acceptance checks, a short cycle budget, and an unambiguous stop condition. If any field is unclear, Sol must do enough discovery or interface planning to clarify it before dispatch.
+
+Sol owns the project and converts it into successive waves; no Luna worker owns a whole feature, repository-wide review, broad refactor, multi-stage project, or open-ended investigation. When implementation depends on an unknown, dispatch a finite exploration slice first. If a running slice expands, take its smallest useful partial handoff, retire the worker, and decompose the remainder for a fresh agent rather than widening the assignment.
+
+Shape each slice around one concrete, independently checkable outcome. Aim for a first useful checkpoint in roughly 2–5 minutes and a complete handoff in roughly 5–10 minutes. Treat 10 minutes as the ordinary hard stop; run a named inherently slow build or test under Sol when practical so it does not occupy a worker. If an ordinary assignment is likely to consume 20–30 minutes without an intermediate result, split it before dispatch. Do not give one worker an entire feature, broad refactor, or whole-repository review when it can be divided by file, interface, behavior, test case, or question.
 
 Keep tightly coupled design decisions, cross-cutting integration, and final acceptance with Sol. Give Luna workers disjoint write scopes or one precise read-only question. No helper should sit idle waiting for another helper; Sol schedules dependent slices in successive waves.
 
-Before dispatch, record a compact queue and roster: slice, helper id, role, owned scope, dependencies, parent-owned work, checkpoint target, total budget, and state (`queued`, `working`, `handoff requested`, `auditing`, `accepted`, or `reclaimed`). Keep this in the current plan or working notes, not in the repository.
+Before dispatch, record a compact queue and roster: slice, helper id, role, owned scope, dependencies, parent-owned work, checkpoint target, total budget, and state (`queued`, `working`, `retired/auditing`, `accepted`, `replacement needed`, or `reclaimed`). Keep this in the current plan or working notes, not in the repository.
 
 Spawn with this routing shape:
 
@@ -47,32 +54,38 @@ Use this brief:
 ```text
 Task: one concrete outcome.
 Owns: exact files/modules, or one read-only question.
+Out of scope: adjacent work and decisions this worker must not absorb.
 Parent owns: design/integration/audit work that must not be duplicated.
 Context: relevant user intent, repository state, constraints, and facts needed without parent history.
+Inputs/dependencies: current facts and completed prerequisites needed to begin.
 Must do: applicable AGENTS.md and skill instructions, required behavior, edge cases, commands, and the freshness gate below.
 Must not do: unrelated refactors, other write scopes, destructive operations, model changes, or sub-delegation.
 Collaboration: You are not alone in the codebase. Do not revert unrelated edits. Adapt to existing changes.
 Tools: use exposed first-class agent/workspace tools for reading, searching, listing, browsing, and editing. Use apply_patch for text edits. Use shell only when the operation inherently requires process execution or no non-shell capability exists.
 Freshness: verify changeable assumptions against current workspace evidence and primary official sources. Do not try to infer or announce your own model identity or cutoff; missing model metadata is not a blocker.
+Expected output: exact artifact, finding, patch, or result shape to return.
+Acceptance: objective checks that make this slice complete.
+Stop when: acceptance passes, the cycle budget expires, scope grows, or a named blocker prevents progress.
 Deliver: changed paths or findings; rationale; commands and results; tests/checks run, skipped, or failed; assumptions; remaining risks.
 Checkpoint: send the first concrete finding, artifact, or direction risk promptly; do not wait for the entire slice when early feedback can prevent churn.
+Lifecycle: this is your only assignment; return one handoff and expect immediate retirement. Do not wait for follow-up work.
 If blocked or the slice is larger than expected: immediately return the smallest useful partial result, exact blocker, and a proposed smaller follow-up slice.
-Cycle budget: target first value in 2–5 minutes and handoff in 5–10 minutes, adjusted only for known slow commands.
+Cycle budget: target first value in 2–5 minutes and handoff in 5–10 minutes; ordinary hard stop at 10 minutes. Prefer that Sol run known slow commands.
 ```
 
 ## Rolling Controller Loop
 
 Launch the first wave to capacity rather than spawning one helper and waiting. After dispatch, Sol performs only non-overlapping controller work: further decomposition, interface decisions, rolling audits, integration planning, or validation setup. It does not create a second implementation of a Luna-owned slice.
 
-Process each checkpoint or completion as it arrives; do not wait at a cohort barrier for all helpers. Audit usable results immediately, update the task shape from what was learned, and refill the newly available slot with the next ready microtask. Reuse a completed helper when its local context clearly accelerates a closely related follow-up; otherwise prefer a fresh, narrowly briefed Luna agent. Keep all available slots occupied until no useful independent work remains.
+Process each checkpoint or completion as it arrives; do not wait at a cohort barrier for all helpers. On completion, harvest the report and shared changes, immediately terminate or permanently retire the agent id, audit the result, update the task shape, and refill the slot with a new Luna agent. Never reuse a completed helper. Keep all available slots occupied until no useful independent work remains.
 
 When a result becomes blocking or no useful controller work remains:
 
 1. Wait in a bounded event window for the first helper event across the active roster; avoid per-agent short polling. A timeout is not failure.
 2. Reconcile unexpected silence with `list_agents`.
-3. Move completed work directly into Sol's audit while the other helpers continue, then dispatch the next ready slice into the open slot.
-4. For work past its expected feedback window or off-scope, use `followup_task` to request an immediate smallest-useful handoff, changed paths/findings, commands, and remaining work. Split the remainder rather than extending an oversized cycle by default.
-5. If the handoff remains unusable, interrupt when supported, mark it `reclaimed`, and dispatch a narrower Luna replacement. If no safe bounded Luna slice is possible, report the blocker instead of quietly turning Sol into the implementer.
+3. Harvest completed work, retire that helper immediately, and move its result into Sol's audit while the other helpers continue; refill the slot with a new agent.
+4. At the feedback budget, on scope drift, or when a slice becomes oversized, interrupt and retire the helper instead of extending or re-prompting it. Preserve useful shared artifacts and split the remainder.
+5. If work is incomplete or fails audit, dispatch a fresh narrower Luna replacement with the current artifacts, exact failed checks/findings, suspected gap, and added detail. If no safe bounded slice is possible, report the blocker instead of quietly turning Sol into the implementer.
 
 Process helper messages before starting unrelated work. Target follow-ups only at recorded child agents, never the root/current agent.
 
@@ -126,7 +139,7 @@ Sol accepts no helper result until it has:
 - verified every material changeable assumption against the installed or locked version and current primary official sources, with dates or versions recorded;
 - integrated disjoint slices and checked their boundaries together.
 
-Treat Luna output as evidence, not completion. Reject or repair vague output, missing paths/findings, unexplained skipped checks, symptom-only fixes, ownership violations, or unrelated changes. Send concrete findings back to the same Luna worker when its context remains useful; otherwise use a narrower replacement. Re-audit every repair.
+Treat Luna output as evidence, not completion. Reject vague output, missing paths/findings, unexplained skipped checks, symptom-only fixes, ownership violations, or unrelated changes. The producing worker is already retired: every repair goes to a fresh narrower Luna agent with the failed evidence and additional detail. Retire the replacement after its one handoff and re-audit every repair.
 
 Only report completion after every relevant helper is accepted, rejected, or reclaimed and the Sol audit gate passes. State skipped verification and remaining risk plainly.
 

@@ -1,6 +1,6 @@
 ---
 name: delegate-and-audit
-description: Delegate explicitly requested bounded work to subagents, verify changeable facts with current evidence, and audit every result before acceptance. Use for delegation, parallel work, or independent implementation/review; use Big Little for explicit Sol/Luna routing.
+description: Delegate explicitly requested bounded work to one-shot subagents, verify changeable facts with current evidence, and audit every result before acceptance. Use for generic delegation, parallel work, or independent implementation/review; use a Big Little variant for explicit Sol/Luna routing.
 ---
 
 # Delegate And Audit
@@ -13,14 +13,28 @@ Use delegation to remove work from the parent, not responsibility. The parent ow
 - Before spawning, name the helper's exact scope and the next non-overlapping parent action. If neither exists, keep the task local.
 - Once a worker owns a write scope, do not implement that same change locally. Read it only for context or audit. Reclaim it only after the worker fails, is cancelled, or hands it back.
 - A worker or reviewer does its assigned work itself. It does not spawn subagents; the parent controls all dispatch and review.
+- Every helper is one-shot. After taking its completed or partial handoff, terminate, interrupt, close, or otherwise retire it with the lifecycle tools the harness exposes. Never send it another task and never use `followup_task` to reactivate it. If no destroy/close operation exists, interrupt it when applicable, mark its id permanently retired, and never target it again.
 - The parent and every helper treat model memory as a source of hypotheses, never as proof that changeable behavior is current.
-- Do not give the user an interim or final handoff while a helper is still relevant. Reconcile every live helper: audit its result, send a scoped follow-up, or explicitly reclaim its scope.
-- Use only tools exposed in the current harness. Common Codex tools include `spawn_agent`, `followup_task`, `wait_agent`, `list_agents`, and `interrupt_agent`; do not assume a particular cleanup tool or parameter is available.
-- Target `followup_task` only at a recorded child agent, never the current or root agent.
+- Do not give the user an interim or final handoff while a helper is still relevant. Reconcile every helper by harvesting available work, retiring the helper, then accepting, rejecting, or replacing its result.
+- Use only lifecycle tools exposed in the current harness, such as `spawn_agent`, `wait_agent`, `list_agents`, and `interrupt_agent`; do not invent a destroy tool or parameter.
 
 ## Decide and Brief
 
 Delegate only bounded, independent work:
+
+### Mandatory dispatch gate
+
+Do not spawn until the assignment is decomposed into a finite slice with all of these named explicitly:
+
+1. One concrete outcome.
+2. Exact in-scope ownership and out-of-scope boundaries.
+3. The minimum current inputs and completed dependencies needed to begin.
+4. A defined deliverable or output shape.
+5. Objective acceptance checks or success criteria.
+6. A short cycle budget and an unambiguous stop condition.
+7. Any dependency that must finish before this slice can start.
+
+If any item is missing, or the assignment amounts to "finish the feature," "review the repository," "fix everything," an open-ended investigation, or another multi-stage project, do not delegate it yet. The parent performs enough discovery to make a queue of smaller, independently auditable slices. A worker owns one slice, never the surrounding project. If scope expands after dispatch, harvest the smallest useful partial result, retire the worker, and redecompose the remainder for a fresh agent instead of extending the assignment.
 
 - a worker owns disjoint files/modules or one clear implementation slice;
 - an explorer answers one precise read-only question;
@@ -28,24 +42,30 @@ Delegate only bounded, independent work:
 
 Keep the work local when the next action depends on a tightly coupled design decision, the write scope is unclear, or explaining the job costs more than doing it. First do enough discovery to make ownership concrete; a read-only explorer can help with that discovery.
 
-For every spawn, keep a tiny controller record in the current plan or working notes: helper id, role, owned scope, parent-owned work, first wait, total budget, and state (`working`, `handoff requested`, `auditing`, `accepted`, or `reclaimed`). It is a recovery cue after compaction, not a project artifact or ceremony.
+For every spawn, keep a tiny controller record in the current plan or working notes: helper id, role, owned scope, parent-owned work, first checkpoint, total budget, and state (`working`, `retired/auditing`, `accepted`, `replacement needed`, or `reclaimed`). It is a recovery cue after compaction, not a project artifact or ceremony.
 
-Use `fork_turns: "none"` only when the brief includes every applicable user, repository, AGENTS.md, and skill instruction plus the task context the helper needs. Otherwise use the smallest context-bearing fork that makes the task safe. For code work, include: "You are not alone in the codebase. Do not revert unrelated edits. Adapt to existing changes."
+Keep helper context small. Prefer `fork_turns: "none"` with a self-contained brief containing the applicable user, repository, AGENTS.md, and skill instructions plus only the files, facts, and interfaces needed for one slice. Otherwise use the smallest positive context-bearing fork that makes the task safe; never pass full history merely for convenience. Split work before a brief or expected run becomes large. For code work, include: "You are not alone in the codebase. Do not revert unrelated edits. Adapt to existing changes."
 
 Use this brief:
 
 ```text
 Task: one concrete outcome.
 Owns: exact files/modules, or one read-only question.
+Out of scope: adjacent work and decisions this worker must not absorb.
 Parent owns: concurrent work that must not be duplicated.
+Inputs/dependencies: current facts and completed prerequisites needed to begin.
 Must do: applicable instructions, behavior, edge cases, required commands, and the freshness gate below.
 Must not do: unrelated refactors, other files, destructive operations, or sub-delegation.
 Tools: use exposed first-class agent/workspace tools for reading, searching, listing, browsing, and editing. Use apply_patch for text edits. Use shell only when the operation inherently requires process execution or no non-shell capability exists.
 Freshness: verify changeable assumptions against current workspace evidence and primary official sources. Do not try to infer or announce your own model identity or cutoff; missing model metadata is not a blocker.
+Expected output: exact artifact, finding, patch, or result shape to return.
+Acceptance: objective checks that make the slice complete.
+Stop when: acceptance passes, the cycle budget expires, scope grows, or a named blocker prevents progress.
 Deliver: changed paths or findings; rationale; commands and results;
 tests/checks run, skipped, or failed; assumptions; remaining risks.
-If blocked: return the smallest useful partial result and the blocker.
-Wait budget: first wait <duration>; total budget <duration>.
+Lifecycle: this is your only assignment; return one handoff and expect immediate retirement. Do not wait for more work.
+If blocked or oversized: return the smallest useful partial result, exact blocker, and proposed smaller remainder immediately.
+Cycle budget: target first concrete value in 2–5 minutes and final handoff in 5–10 minutes. Treat 10 minutes as the ordinary hard stop; a named inherently slow command is the only exception and should usually run under the parent.
 ```
 
 ## Controller Loop
@@ -54,10 +74,11 @@ Immediately after spawning, do the recorded non-overlapping parent work. Do not 
 
 When the helper's result becomes blocking or no useful local work remains:
 
-1. Wait in a bounded, harness-supported window; use a long event wait when the harness permits it rather than short polling. A timeout means "not finished," not failure.
+1. Wait in a bounded, harness-supported window for the first helper event rather than short polling. A first timeout means "not finished," not failure, but the total cycle budget still applies.
 2. Reconcile the roster with `list_agents` after a timeout or unexpected silence.
-3. For a completed helper, move directly to audit. For a live helper within budget, continue useful parent work or wait again. For a helper past budget or off-scope, use `followup_task` to request changed paths/findings, commands run, and remaining work.
-4. If the handoff is still not useful, use `interrupt_agent` when available and reclaim the scope locally or replace it with a narrower brief. Mark the original scope `reclaimed`.
+3. For a completed helper, capture its report and shared-workspace changes, immediately terminate or permanently retire the helper id, then audit. Never reuse that agent.
+4. For a live helper still within its short budget, continue useful parent work or wait once more. At the budget, on scope drift, or when the slice proves too large, interrupt and retire it. Preserve any useful shared artifacts and mark unfinished ownership `replacement needed` or `reclaimed`.
+5. If work remains or audit fails, spawn a new helper with fresh context. Its brief includes the current artifact state, concrete failed checks or findings, the suspected gap, and a smaller exact scope; it does not inherit the retired agent's conversation.
 
 Do not busy-poll. Do not mistake a returned spawn id, an idle status, or an elapsed wait for a completed task. If the platform delivers a helper message while the parent is active, process it before starting unrelated work.
 
@@ -111,7 +132,7 @@ Accept no helper result until the parent has:
 
 For a review helper, provide the task, relevant diff/range, and explicit audit questions. Require file-and-line evidence for findings. Keep re-review scoped to concrete open findings; do not launch a new broad review after each small fix.
 
-Reject or rework output that is vague, lacks changed paths/findings, skips checks without a reason, hides a symptom, exceeds its ownership, reverts unrelated work, or cannot be defended by the parent. Send concrete findings back with `followup_task`; reuse the same helper when its context is useful, otherwise replace it with a narrower task.
+Reject or rework output that is vague, lacks changed paths/findings, skips checks without a reason, hides a symptom, exceeds its ownership, reverts unrelated work, or cannot be defended by the parent. Never return findings to the retired helper. Create a fresh, narrowly scoped replacement with the failed audit evidence and additional detail needed to fix the issue, then retire and audit that replacement in the same one-shot manner.
 
 Only report completion after every relevant helper is accepted, rejected, or reclaimed and the audit gate has passed. State any skipped verification and remaining risk plainly.
 

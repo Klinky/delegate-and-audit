@@ -1,0 +1,4 @@
+interface:
+  display_name: "Big Little Delegate and Audit Fast"
+  short_description: "Sol medium audits one-shot Luna medium cycles."
+  default_prompt: "Use $big-little-delegate-and-audit-fast so 5.6 Sol medium rapidly orchestrates and audits short one-shot 5.6 Luna medium workers."
