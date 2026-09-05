@@ -1,0 +1,4 @@
+interface:
+  display_name: "Big Little Delegate and Audit Astra"
+  short_description: "Astra medium audits short Luna medium worker cycles."
+  default_prompt: "Use $big-little-delegate-and-audit-astra so 6 Astra medium audits short one-shot 5.6 Luna medium workers, retires each after handoff, and uses fresh agents for repairs."
