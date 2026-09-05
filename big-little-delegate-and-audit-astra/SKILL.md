@@ -7,6 +7,14 @@ description: "Use only for an explicitly requested Astra Big Little or Astra/Lun
 
 Use a large controller and many small executors: the `gpt-6-astra` parent with `medium` reasoning owns discovery, decomposition, dispatch, reconciliation, and the final audit; every subagent runs `gpt-5.6-luna` with `medium` reasoning. Maximize useful concurrency and shorten the feedback loop. Prefer several quickly verifiable slices over one epic assignment that can churn for 20–30 minutes before revealing a wrong direction.
 
+## Astra Working Guidance
+
+- Carry authorized work through completion. Resolve routine gaps from context; ask only when an answer materially affects the outcome, continuing independent work meanwhile.
+- User instructions override skill guidelines, subject to higher-priority instructions. Apply existing authorization before interpreting skill or `AGENTS.md` guidance as requiring approval. If an instruction forces a pause or divergence, link its file, quote the rule, and explain its applicability versus your interpretation.
+- Treat mid-task user updates as steering: preserve completed work and the objective unless explicitly replaced. Reconcile affected workers before redispatch.
+- Keep user updates concise and outcome-first; use plain prose and lists only where useful. Make agent briefs and messages readable, with proper spacing.
+- Delegate whenever useful independent slices pass the gate below; Astra retains orchestration and audit, and Luna never sub-delegates.
+
 ## Architecture Contract
 
 - Use this skill only when the user explicitly asks for the Astra Big Little workflow or the Astra/Luna medium model split. Use the regular Delegate And Audit skill for generic subagent or parallel-work requests.
@@ -114,6 +122,8 @@ A successful `apply_patch` is sufficient evidence that its edit was applied. Re-
 
 Use the fewest useful tool loops consistent with correctness. Prefer static inspection when execution is optional. Batch relevant validation near the end; if permissions block validation, report what could not run rather than repeatedly seeking approval.
 
+Match verification to scope and risk. Avoid implementation-mirroring tests for minor reversible edits. Complete required checks; repeat or broaden them only for changed code, failures, or unresolved concerns. Astra still independently audits every handoff.
+
 ## Freshness Gate
 
 Astra runs this gate before decomposition, assigns each Luna slice its own freshness ownership, and audits the returned evidence:
@@ -146,3 +156,5 @@ Only report completion after every relevant helper is accepted, rejected, or rec
 ## Reference
 
 Use [references/big-little-checklist.md](references/big-little-checklist.md) for the compact dispatch, monitoring, and Astra-audit checklist.
+
+Astra prompting guidance reviewed September 5, 2026 against the official [GPT-6 Astra model guide](https://developers.openai.com/api/docs/guides/latest-model). Preserve the medium/medium routing and one-shot worker contract when applying that guidance.

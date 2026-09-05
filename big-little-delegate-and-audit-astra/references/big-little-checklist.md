@@ -3,6 +3,7 @@
 ## Preflight
 
 - Confirm delegation was explicitly requested.
+- Apply the `SKILL.md` Astra Working Guidance for autonomy, instruction conflicts, user steering, and communication.
 - Route the root/controller as `gpt-6-astra` with `reasoning_effort: "medium"`. Verify via runtime/status metadata, then the current session JSONL's explicit `model` field when needed. Environment variables alone are incomplete; match the current session and never inspect unrelated transcripts. Do not ask the model to self-identify or block when metadata is absent.
 - Determine available concurrency and prepare enough disjoint microtasks to fill every helper slot.
 - Define Astra-owned controller/audit work and a queue of Luna slices with dependencies.
@@ -48,6 +49,7 @@
 - Read the report, changed paths, and diff.
 - Verify scope, behavior, root cause, edge cases, errors, and unrelated changes.
 - Run relevant checks locally or explain why not.
+- Apply the scope-and-risk verification guidance in `SKILL.md`; preserve independent parent audit.
 - Validate integration boundaries across worker slices.
 - Check installed or locked versions and current primary official sources for every material changeable assumption.
 - Spawn a fresh agent for each repair, retire it after one handoff, and re-audit the result.
