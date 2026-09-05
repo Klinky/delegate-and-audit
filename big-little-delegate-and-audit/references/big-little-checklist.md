@@ -2,6 +2,9 @@
 
 ## Preflight
 
+- Apply the `SKILL.md` Project Environment and Technology Briefing: establish the relevant execution environment and current version-appropriate practices with targeted, bounded discovery.
+- Include the slice-specific environment, exact commands, concise technology guidance, evidence references, and relevant unknowns in each brief; reuse the shared summary instead of repeating broad discovery.
+
 - Confirm delegation was explicitly requested.
 - Route the root/controller as `gpt-5.6-sol`. Verify via runtime/status metadata, then the current session JSONL's explicit `model` field when needed. Environment variables alone are incomplete; match the current session and never inspect unrelated transcripts. Do not ask the model to self-identify or block when metadata is absent.
 - Determine available concurrency and prepare enough disjoint microtasks to fill every helper slot.
@@ -44,6 +47,8 @@
 - Never hand off to the user with a relevant helper unreconciled.
 
 ## Sol audit
+
+- Verify that the worker used the intended environment and project tooling and followed the brief's version-appropriate technology guidance; refresh shared facts when findings contradict them.
 
 - Read the report, changed paths, and diff.
 - Verify scope, behavior, root cause, edge cases, errors, and unrelated changes.

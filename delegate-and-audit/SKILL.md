@@ -18,6 +18,16 @@ Use delegation to remove work from the parent, not responsibility. The parent ow
 - Do not give the user an interim or final handoff while a helper is still relevant. Reconcile every helper by harvesting available work, retiring the helper, then accepting, rejecting, or replacing its result.
 - Use only lifecycle tools exposed in the current harness, such as `spawn_agent`, `wait_agent`, `list_agents`, and `interrupt_agent`; do not invent a destroy tool or parameter.
 
+## Project Environment and Technology Briefing
+
+The orchestrator owns an accurate working understanding of the project's execution environment and technology foundations before implementation is dispatched. Establish the facts needed to choose valid commands, divide work, and audit results; do not make every worker rediscover the project.
+
+- Start with applicable project instructions and targeted manifest, lockfile, runtime-version, build/configuration, CI, and setup-documentation reads. Identify the host OS and shell, actual execution target (host, WSL, container, or remote), working directory, runtime/interpreter and version, virtual environment and how commands enter it, package manager/version and lockfile, workspace layout, build/test/lint tooling, and required services or environment-variable names. Inspect only task-relevant configuration; do not collect secret values or dump the entire environment.
+- Distinguish declared setup from the available runtime. Use small read-only checks where needed to confirm executable paths, versions, environment selection, and command availability. Record exact project commands and execution directories. Resolve material mismatches before dependent implementation; mark unavailable facts explicitly. A bounded read-only explorer may resolve a named unknown with the known environment and safe inspection scope.
+- Identify the technologies and versions that affect the task. Use the freshness gate to verify their fundamental current practices against primary official documentation applicable to those versions: supported APIs and idioms, architecture/lifecycle conventions, dependency handling, security, and testing as relevant. Reconcile these with project conventions; flag material conflicts instead of silently upgrading dependencies or imposing a different stack.
+- Keep discovery proportional: locate files first, read relevant sections, exclude dependency trees and generated output, and bound search/command output. Expand only to answer a concrete unresolved question. Stop when the environment, applicable practices, and acceptance commands are sufficiently established for the slice.
+- Keep one compact evidence summary in working notes: facts, source paths or URLs, versions/dates, exact commands, and unresolved constraints. Preserve it through compaction. Give each worker only its relevant subset and actionable practice guidance, with references for optional detail; do not forward raw logs, whole manuals, lockfiles, or discovery history. Reuse verified evidence and refresh affected facts when configuration or new findings change them.
+
 ## Decide and Brief
 
 Delegate only bounded, independent work:
@@ -54,6 +64,8 @@ Owns: exact files/modules, or one read-only question.
 Out of scope: adjacent work and decisions this worker must not absorb.
 Parent owns: concurrent work that must not be duplicated.
 Inputs/dependencies: current facts and completed prerequisites needed to begin.
+Environment: relevant OS/shell and execution target, working directory, runtime/virtual environment, package manager, and exact setup/build/check commands; known constraints.
+Technology practices: concise version-appropriate guidance for this slice, verified source paths/URLs, and unresolved questions. Reuse supplied evidence; report contradictions before dependent work.
 Must do: applicable instructions, behavior, edge cases, required commands, and the freshness gate below.
 Must not do: unrelated refactors, other files, destructive operations, or sub-delegation.
 Tools: use exposed first-class agent/workspace tools for reading, searching, listing, browsing, and editing. Use apply_patch for text edits. Use shell only when the operation inherently requires process execution or no non-shell capability exists.
@@ -121,6 +133,8 @@ Treat a knowledge cutoff only as optional context, never as the freshness mechan
 Do not browse merely to reconfirm stable repository-local facts or timeless algorithms. Use model knowledge to form questions and automate the work; use current evidence to choose and defend the implementation. If new evidence invalidates a shared assumption, pause dependent work, update the briefs, and tell the user promptly.
 
 ## Audit Gate
+
+Verify that implementation and checks used the intended environment and project commands, and that technology choices follow the brief's verified version-appropriate practices. Reconcile discrepancies with the shared summary before acceptance.
 
 Accept no helper result until the parent has:
 

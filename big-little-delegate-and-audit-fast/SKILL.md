@@ -18,6 +18,16 @@ Use `gpt-5.6-sol` at `medium` reasoning as a fast controller and auditor over ma
 - Keep write scopes disjoint. Reclaim a scope only after its worker is retired.
 - Fill every available helper slot with useful independent work, not duplicate research or conflicting edits.
 
+## Project Environment and Technology Briefing
+
+The orchestrator owns an accurate working understanding of the project's execution environment and technology foundations before implementation is dispatched. Establish the facts needed to choose valid commands, divide work, and audit results; do not make every worker rediscover the project.
+
+- Start with applicable project instructions and targeted manifest, lockfile, runtime-version, build/configuration, CI, and setup-documentation reads. Identify the host OS and shell, actual execution target (host, WSL, container, or remote), working directory, runtime/interpreter and version, virtual environment and how commands enter it, package manager/version and lockfile, workspace layout, build/test/lint tooling, and required services or environment-variable names. Inspect only task-relevant configuration; do not collect secret values or dump the entire environment.
+- Distinguish declared setup from the available runtime. Use small read-only checks where needed to confirm executable paths, versions, environment selection, and command availability. Record exact project commands and execution directories. Resolve material mismatches before dependent implementation; mark unavailable facts explicitly. A bounded read-only explorer may resolve a named unknown with the known environment and safe inspection scope.
+- Identify the technologies and versions that affect the task. Use the freshness gate to verify their fundamental current practices against primary official documentation applicable to those versions: supported APIs and idioms, architecture/lifecycle conventions, dependency handling, security, and testing as relevant. Reconcile these with project conventions; flag material conflicts instead of silently upgrading dependencies or imposing a different stack.
+- Keep discovery proportional: locate files first, read relevant sections, exclude dependency trees and generated output, and bound search/command output. Expand only to answer a concrete unresolved question. Stop when the environment, applicable practices, and acceptance commands are sufficiently established for the slice.
+- Keep one compact evidence summary in working notes: facts, source paths or URLs, versions/dates, exact commands, and unresolved constraints. Preserve it through compaction. Give each worker only its relevant subset and actionable practice guidance, with references for optional detail; do not forward raw logs, whole manuals, lockfiles, or discovery history. Reuse verified evidence and refresh affected facts when configuration or new findings change them.
+
 ## Fast Microtasks
 
 Perform a quick discovery pass, queue small independent slices, and launch up to available capacity. Give each worker one precise question, one behavior, one test group, or a disjoint file/module scope. Keep design decisions, integration, and acceptance with Sol.
@@ -54,6 +64,8 @@ Out of scope: adjacent work and decisions this worker must not absorb.
 Parent owns: design, integration, audit, and all other scopes.
 Context: only the current facts, interfaces, and instructions required for this slice.
 Inputs/dependencies: current facts and completed prerequisites needed to begin.
+Environment: relevant OS/shell and execution target, working directory, runtime/virtual environment, package manager, and exact setup/build/check commands; known constraints.
+Technology practices: concise version-appropriate guidance for this slice, verified source paths/URLs, and unresolved questions. Reuse supplied evidence; report contradictions before dependent work.
 Must do: required behavior, edge cases, checks, and freshness evidence.
 Must not do: unrelated changes, other write scopes, destructive work, model changes, or sub-delegation.
 Collaboration: do not revert unrelated edits; adapt to concurrent changes.
@@ -93,6 +105,8 @@ Before dispatch, Sol obtains the current date and inventories changeable assumpt
 Model cutoff is optional context, not freshness evidence. When useful, Sol checks the current official pages for exact `gpt-5.6-sol` and `gpt-5.6-luna` identifiers once and shares the result. Never infer across sibling models or make every worker repeat the lookup. If a cutoff is undocumented, proceed without complaint.
 
 ## Sol Audit And Replacement Gate
+
+Verify that implementation and checks used the intended environment and project commands, and that technology choices follow the brief's verified version-appropriate practices. Reconcile discrepancies with the shared summary before acceptance.
 
 Sol accepts a result only after reading its report and changed paths, inspecting the diff for ownership and regressions, checking behavior and integration boundaries, running relevant validation or recording why it could not run, and verifying material changeable assumptions against installed versions and current primary sources.
 

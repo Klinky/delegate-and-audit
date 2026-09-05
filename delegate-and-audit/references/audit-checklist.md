@@ -2,6 +2,9 @@
 
 ## Before spawn
 
+- Apply the `SKILL.md` Project Environment and Technology Briefing: establish the relevant execution environment and current version-appropriate practices with targeted, bounded discovery.
+- Include the slice-specific environment, exact commands, concise technology guidance, evidence references, and relevant unknowns in each brief; reuse the shared summary instead of repeating broad discovery.
+
 - Confirm the user explicitly asked for delegation or an independent pass.
 - Define the helper-owned scope and a different parent-owned next action.
 - Confirm write scopes are disjoint; otherwise do local discovery first.
@@ -35,6 +38,8 @@
 - Never give the user a final handoff with a relevant helper unreconciled.
 
 ## Audit before acceptance
+
+- Verify that the worker used the intended environment and project tooling and followed the brief's version-appropriate technology guidance; refresh shared facts when findings contradict them.
 
 - Read the report, changed paths, and diff.
 - Compare behavior and scope with the brief.

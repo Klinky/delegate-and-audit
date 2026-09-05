@@ -2,6 +2,9 @@
 
 ## Preflight
 
+- Apply the `SKILL.md` Project Environment and Technology Briefing: establish the relevant execution environment and current version-appropriate practices with targeted, bounded discovery.
+- Include the slice-specific environment, exact commands, concise technology guidance, evidence references, and relevant unknowns in each brief; reuse the shared summary instead of repeating broad discovery.
+
 - Confirm Spark Big Little or Sol/Spark medium orchestration was explicitly requested.
 - Route Sol at `medium`; verify actual model from runtime/status or matched current-session JSONL metadata when needed. Environment variables alone are incomplete.
 - Queue enough disjoint microtasks to fill useful capacity; keep design, integration, and audit with Sol.
@@ -31,6 +34,8 @@
 - Treat memory as hypothesis, not evidence, and pause dependent slices when fresh evidence changes direction.
 
 ## Sol audit
+
+- Verify that the worker used the intended environment and project tooling and followed the brief's version-appropriate technology guidance; refresh shared facts when findings contradict them.
 
 - Read reports, paths, and diffs; verify scope, behavior, edge cases, errors, and integration boundaries.
 - Run relevant checks or explain why not; validate installed versions and current primary sources.
