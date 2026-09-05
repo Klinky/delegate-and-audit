@@ -21,6 +21,10 @@
 
 ## While active
 
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
+- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
+- Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
+
 - Fill useful slots, process results as they arrive, and avoid cohort barriers or short polling.
 - Harvest each handoff, terminate/interrupt or permanently retire the id, then audit.
 - Refill with a new agent; never call `followup_task` on a used worker.

@@ -36,6 +36,10 @@
 
 ## While active
 
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
+- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
+- Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
+
 - Fill all useful helper slots immediately and keep a ready queue for successive waves.
 - Astra does only non-overlapping decomposition, orchestration, rolling audit, integration planning, and validation setup.
 - Process the first arriving checkpoint/completion; do not wait for a whole cohort.

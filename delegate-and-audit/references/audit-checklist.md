@@ -28,6 +28,10 @@
 
 ## While active
 
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
+- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
+- Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
+
 - Do only non-overlapping parent work.
 - When idle or blocked on the result, use one bounded event wait; do not short-poll.
 - After a timeout or unexpected silence, use `list_agents` and update the record.

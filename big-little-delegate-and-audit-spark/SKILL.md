@@ -93,6 +93,19 @@ Process results as they arrive; never wait for a cohort barrier:
 
 Give the user rapid feedback only at meaningful milestones or when early evidence changes direction. Reconcile and retire every relevant helper before the final handoff.
 
+## Agent Pool Hygiene and Limit Recovery
+
+The orchestrator owns pool cleanup as well as dispatch. A spawn, thread, or agent-count limit triggers lifecycle recovery; it does not authorize the orchestrator to take over worker implementation. Keep unfinished slices queued for fresh agents and continue only the parent-owned discovery, coordination, integration, and audit work allowed by this skill.
+
+Official [subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents), checked September 5, 2026, describes closing completed threads and a cap on concurrently open spawned threads. The recovery policy below applies that distinction to this skill's one-shot workflow; use the active harness's exposed tools and actual limit semantics.
+
+- At preflight, identify available roster, interrupt, and close/terminate controls and what each actually releases. Track every child id, assigned slice, ownership, handoff, and closure/capacity status in the compact roster. Reconcile it against the current task's live agent tree after compaction, unexpected silence, and failed spawns so forgotten children do not become orphans.
+- Harvest useful reports and shared artifacts promptly, then aggressively close completed, abandoned, or idle children with no useful active assignment. Clean up after each handoff, before replacement waves, and before final handoff; do not retain idle agents for possible reuse. Inspect an idle agent's assignment and pending tools first: idle is not proof of completion. Preserve partial work, stop abandoned activity, and confirm it cannot still write before transferring ownership. Never target the root or unrelated sessions.
+- Retirement elsewhere in this skill means permanent non-reuse plus actual thread closure whenever the harness provides it. Prefer an exposed close/terminate operation that releases capacity; interrupt first if required. An interrupt may stop only a turn, and marking an id retired does not itself free a thread slot. If closure is unavailable, interrupt applicable activity, record the id as retired with capacity release unconfirmed, and never claim it was closed.
+- On a count-limit error, stop blind spawn retries, read the error, and reconcile the roster. Harvest and close all eligible idle, completed, failed, or orphaned children within this task. Confirm cleanup through lifecycle results or refreshed capacity/status, then make one fresh spawn attempt. Reattempt only after another relevant state change; preserve queued work and one-shot model/reasoning rules.
+- If all slots belong to useful running work, wait for a bounded completion event, then harvest and close that worker before replacing it. Do not kill productive workers merely to churn the pool; apply the existing stall, scope, and cycle-budget rules. A stopped agent's outstanding commands must be reconciled before a replacement can own its files.
+- If cleanup cannot release capacity, distinguish open-thread exhaustion from a cumulative spawn cap or another quota using current evidence. Closing threads may not reset other limits. Continue independent controller work, retain the queue and evidence, and report the precise remaining blocker when dependent work cannot proceed. Do not silently raise limits, revive retired workers, or turn the orchestrator into the executor.
+
 ## Tooling And Freshness
 
 - Before shell, use an exposed first-class agent, workspace, MCP, browser, web, file, or artifact tool that performs the operation. Use `apply_patch` for ordinary text edits.
