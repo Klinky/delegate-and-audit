@@ -13,7 +13,7 @@
 - Pass the dispatch gate before spawning: one finite outcome, exact in/out boundaries, current inputs and dependencies, defined output, acceptance checks, cycle budget, and stop condition.
 - If the task is a feature, repository-wide review, broad refactor, or open-ended investigation, decompose it into independently auditable slices first; never make one helper own the project.
 - Tell workers not to revert unrelated work or spawn subagents.
-- State the one-shot lifecycle: one assignment, one handoff, then retirement; never reuse an agent id.
+- Require one assignment and a final handoff explicitly confirming no remaining work, no running tools/commands, and no waiting for instructions; report exceptions truthfully.
 - Target first value in 2–5 minutes and handoff in 5–10 minutes; use 10 minutes as the ordinary hard stop.
 
 ## Tools and freshness
@@ -28,17 +28,17 @@
 
 ## While active
 
-- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
-- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
-- Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure for the active tooling version. V2 has no close command; Codex reclaims eligible residents automatically.
+- On count-limit errors, reconcile completion and pending activity before one fresh spawn attempt after a relevant state change. Interruption, verbal confirmation, and a retired flag alone do not prove capacity release.
+- Preserve useful running work and reconcile pending commands before reassignment. After retirement and write-safety checks, the generic parent may reclaim an in-scope slice; pool limits do not authorize raising limits.
 
 - Do only non-overlapping parent work.
 - When idle or blocked on the result, use one bounded event wait; do not short-poll.
 - After a timeout or unexpected silence, use `list_agents` and update the record.
 - Within budget: continue parent work or wait again.
-- On completion: harvest the report and shared changes, terminate/interrupt or permanently retire the helper, then audit.
+- On completion: harvest the report and shared changes, verify final lifecycle confirmation and retire the helper, then audit.
 - Past budget/off-scope: interrupt and retire; preserve useful artifacts and split the remainder.
-- Never use `followup_task` to reactivate a worker. A repair or continuation always gets a fresh agent with failed checks, current state, and a smaller scope.
+- Use `send_message` for cleanup while running, or cleanup-only `followup_task` if idle/interrupted and confirmation is missing. Use one bounded cleanup request per handoff; record failure instead of looping. Accept equivalent explicit final confirmation and send no acknowledgement that could leave pending mail. New slices and repairs always use fresh agents.
 - Never give the user a final handoff with a relevant helper unreconciled.
 
 ## Audit before acceptance

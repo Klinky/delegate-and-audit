@@ -12,22 +12,24 @@
 
 ## Every spawn
 
+- Check model/effort availability and relevant custom-role overrides; a requested route is not proof of the effective route. Follow the `SKILL.md` mismatch handling.
+
 - Set `model: "gpt-5.6-luna"`, `reasoning_effort: "medium"`, and normally `fork_turns: "none"`.
 - Define exact ownership, success checks, current-source needs, and forbidden work.
 - Pass the microtask gate before spawning: one finite outcome, exact in/out boundaries, current inputs and dependencies, defined output, acceptance checks, cycle budget, and stop condition.
 - Keep project ownership with Sol. Decompose features, repository-wide reviews, broad refactors, and open-ended investigations into successive independently auditable microtasks.
-- State one assignment, one handoff, then retirement; never reuse the agent.
+- Require one assignment and a final handoff explicitly confirming no remaining work, no running tools/commands, and no waiting for instructions; report exceptions truthfully.
 - Target first value in 1–3 minutes, handoff in 3–7 minutes, and an ordinary hard stop at 10 minutes.
 
 ## While active
 
-- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
-- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure for the active tooling version. V2 has no close command; Codex reclaims eligible residents automatically.
+- On count-limit errors, reconcile completion and pending activity before one fresh spawn attempt after a relevant state change. Interruption, verbal confirmation, and a retired flag alone do not prove capacity release.
 - Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
 
 - Fill useful slots, process results as they arrive, and avoid cohort barriers or short polling.
-- Harvest each handoff, terminate/interrupt or permanently retire the id, then audit.
-- Refill with a new agent; never call `followup_task` on a used worker.
+- Harvest each handoff, verify final lifecycle confirmation and retire the id, then audit.
+- Use `send_message` for cleanup while running, or cleanup-only `followup_task` if idle/interrupted and confirmation is missing. Use one bounded cleanup request per handoff; record failure instead of looping. Accept equivalent explicit final confirmation and send no acknowledgement that could leave pending mail. New slices and repairs always use fresh agents.
 - Interrupt and retire stalled, drifting, or oversized workers; preserve artifacts and split the remainder.
 - Give every continuation or repair to a fresh agent with current state, failed checks, extra detail, and a smaller scope.
 

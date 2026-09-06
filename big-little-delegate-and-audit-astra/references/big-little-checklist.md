@@ -5,7 +5,7 @@
 - Apply the `SKILL.md` Project Environment and Technology Briefing: establish the relevant execution environment and current version-appropriate practices with targeted, bounded discovery.
 - Include the slice-specific environment, exact commands, concise technology guidance, evidence references, and relevant unknowns in each brief; reuse the shared summary instead of repeating broad discovery.
 
-- Confirm delegation was explicitly requested.
+- Confirm this specific Big Little model split was explicitly requested.
 - Apply the `SKILL.md` Astra Working Guidance for autonomy, instruction conflicts, user steering, and communication.
 - Route the root/controller as `gpt-6-astra` with `reasoning_effort: "medium"`. Verify via runtime/status metadata, then the current session JSONL's explicit `model` field when needed. Environment variables alone are incomplete; match the current session and never inspect unrelated transcripts. Do not ask the model to self-identify or block when metadata is absent.
 - Determine available concurrency and prepare enough disjoint microtasks to fill every helper slot.
@@ -14,13 +14,15 @@
 
 ## Every spawn
 
+- Check model/effort availability and relevant custom-role overrides; a requested route is not proof of the effective route. Follow the `SKILL.md` mismatch handling.
+
 - Set `model: "gpt-5.6-luna"`.
 - Set `reasoning_effort: "medium"` (Medium).
 - Set `fork_turns: "none"` and make the brief self-contained, or use the smallest positive bounded fork when required; never use `"all"` with the model override.
 - Include exact ownership, constraints, commands, deliverables, and no-sub-delegation instruction.
 - Pass the slice gate before spawning: one finite outcome, exact in/out boundaries, current inputs and dependencies, defined output, acceptance checks, cycle budget, and stop condition.
 - Keep project ownership with Astra. Turn features, repository-wide reviews, broad refactors, and open-ended investigations into successive independently auditable slices.
-- State that this is the agent's only assignment and it will be retired immediately after one handoff.
+- Require one assignment and a final handoff explicitly confirming no remaining work, no running tools/commands, and no waiting for instructions; report exceptions truthfully.
 - Tell workers not to revert unrelated edits.
 - Target a first concrete checkpoint in 2–5 minutes and handoff in 5–10 minutes; use 10 minutes as the ordinary hard stop and prefer Astra for known slow commands.
 - Split any ordinary assignment likely to churn for 20–30 minutes without a useful intermediate result.
@@ -36,18 +38,18 @@
 
 ## While active
 
-- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure: reconcile the live roster and promptly harvest and close idle, completed, abandoned, or orphaned task children.
-- On count-limit errors, verify capacity-releasing cleanup before a fresh spawn attempt. Interrupting or marking an id retired alone is not proof of thread closure.
+- Follow the `SKILL.md` Agent Pool Hygiene and Limit Recovery procedure for the active tooling version. V2 has no close command; Codex reclaims eligible residents automatically.
+- On count-limit errors, reconcile completion and pending activity before one fresh spawn attempt after a relevant state change. Interruption, verbal confirmation, and a retired flag alone do not prove capacity release.
 - Keep worker slices queued for fresh agents; pool exhaustion does not transfer implementation to the orchestrator. Preserve useful running work and reconcile pending commands before reassignment.
 
 - Fill all useful helper slots immediately and keep a ready queue for successive waves.
 - Astra does only non-overlapping decomposition, orchestration, rolling audit, integration planning, and validation setup.
 - Process the first arriving checkpoint/completion; do not wait for a whole cohort.
-- Harvest each result, immediately terminate/interrupt or permanently retire that agent id, audit while others continue, then refill with a new agent.
+- Harvest each result, verify its final lifecycle confirmation and retire that agent id, audit while others continue, then refill with a new agent.
 - Wait across the active roster with bounded event waits; do not short-poll each helper.
 - Reconcile silence with `list_agents`.
 - Interrupt and retire a helper that exceeds its feedback window or scope; preserve useful artifacts and split the remainder.
-- Never reuse an agent or call `followup_task` on it. Give continuations and repairs to a fresh agent with current state, failed checks, and more precise detail.
+- Use `send_message` for cleanup while running, or cleanup-only `followup_task` if idle/interrupted and confirmation is missing. Use one bounded cleanup request per handoff; record failure instead of looping. Accept equivalent explicit final confirmation and send no acknowledgement that could leave pending mail. New slices and repairs always use fresh agents.
 - Give the user concrete milestone feedback and surface direction-changing ambiguity early.
 - Never hand off to the user with a relevant helper unreconciled.
 

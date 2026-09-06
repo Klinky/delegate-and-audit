@@ -1,17 +1,46 @@
 # Delegate and Audit Skills
 
-This repository contains five focused Codex skills in sibling directories:
+Five Codex skills for explicitly requested delegation, bounded parallel work, and independent audit. Each uses short, one-shot helpers while the parent retains responsibility for reconciliation and final acceptance.
 
-- `delegate-and-audit/` handles ordinary explicitly requested delegation, bounded parallel work, and independent audit without prescribing a model-routing scheme.
-- `big-little-delegate-and-audit/` is an explicit model-routed variant: a GPT-5.6 Sol controller audits short GPT-5.6 Luna `xhigh` worker cycles and keeps useful concurrency high.
-- `big-little-delegate-and-audit-astra/` uses GPT-6 Astra `medium` to orchestrate and audit short one-shot GPT-5.6 Luna `medium` workers.
-- `big-little-delegate-and-audit-fast/` is the lower-latency variant: GPT-5.6 Sol `medium` audits short one-shot GPT-5.6 Luna `medium` workers.
-- `big-little-delegate-and-audit-spark/` preserves the Fast workflow but uses GPT-5.6 Sol `medium` to audit short one-shot GPT-5.3 Codex Spark `medium` workers.
+## Choose a skill
 
-All five preserve disjoint write ownership, reconcile every helper, treat helper output as evidence rather than completion, and keep final acceptance with the parent. Their freshness gate treats model memory as unverified: current workspace evidence and primary official sources decide changeable behavior. When exact runtime identity matters, the skills check exposed session metadata/status and then the current session JSONL's explicit model field; environment variables alone are not considered a complete check. Model identity and cutoff metadata remain optional context, and missing metadata never blocks the work.
+The skills live in sibling directories. Use the generic skill for ordinary delegation, or select a Big Little variant when the user explicitly requests its model split.
 
-All five skills prefer first-class agent and workspace tools. They reserve shell for operations that inherently execute local processes, such as tests and version-control commands, or as a batched last resort when the active harness exposes no non-shell filesystem capability. On Windows, unavoidable shell work remains PowerShell-native and uses literal paths.
+| Skill | Controller | Workers | Intended workflow |
+| --- | --- | --- | --- |
+| [Delegate and Audit](delegate-and-audit/SKILL.md) | No prescribed model | No prescribed model | General delegation and independent audit. |
+| [Big Little](big-little-delegate-and-audit/SKILL.md) | GPT-5.6 Sol | GPT-5.6 Luna `xhigh` | Short worker cycles with high useful concurrency. |
+| [Astra](big-little-delegate-and-audit-astra/SKILL.md) | GPT-6 Astra `medium` | GPT-5.6 Luna `medium` | Astra orchestration and audit of short worker cycles. |
+| [Fast](big-little-delegate-and-audit-fast/SKILL.md) | GPT-5.6 Sol `medium` | GPT-5.6 Luna `medium` | Lower-latency orchestration and audit. |
+| [Spark](big-little-delegate-and-audit-spark/SKILL.md) | GPT-5.6 Sol `medium` | GPT-5.3 Codex Spark `medium` | The Fast workflow with Spark workers. |
 
-All variants use one-shot helpers. The parent harvests each handoff and retires that agent permanently; continuations and failed-audit repairs go to a new agent with fresh, smaller context and more precise evidence. No helper is spawned until its slice has a finite outcome, exact boundaries, current inputs and dependencies, a defined deliverable, objective acceptance checks, a short budget, and a stop condition. Large projects are handled as successive waves of independently auditable microtasks rather than long, context-heavy assignments.
+## Shared workflow
 
-The skills were reviewed on September 1, 2026 against OpenAI's current [Build skills](https://learn.chatgpt.com/docs/build-skills), [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), and [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model). Re-check those sources when current behavior or model guidance matters.
+Before dispatch, each assignment must have a finite outcome, exact boundaries, current inputs and dependencies, a defined deliverable, objective acceptance checks, a short budget, and a stop condition. Large projects become successive waves of independently auditable microtasks, keeping worker context small and write ownership disjoint.
+
+The parent collects each handoff, retires the helper from substantive work, and audits its result. Helper output is evidence, not completion: every helper must be reconciled before final acceptance. Continuations and failed-audit repairs use fresh agents with smaller context and more precise evidence.
+
+The freshness gate grounds changeable behavior in current workspace evidence and primary official sources. Model memory alone is unverified. When exact runtime identity matters, check exposed session metadata or status, then the current session JSONL's explicit model field; environment variables alone are insufficient. Identity and cutoff metadata remain optional context, and missing metadata does not block work. For the generic skill, check the selected model's current capabilities when they affect the assignment.
+
+Prefer first-class agent and workspace tools. Reserve shell for operations that inherently execute local processes, such as tests and version-control commands, or use it as a batched last resort when the harness exposes no non-shell filesystem capability. On Windows, keep unavoidable shell work PowerShell-native and use literal paths.
+
+## Codex V2 agent lifecycle
+
+V2 has no manual close command. Workers finish with a final handoff confirming no remaining work or running commands. The orchestrator verifies completion and resolves pending activity so Codex can reclaim eligible agents automatically; confirmation alone does not prove capacity release.
+
+When confirmation is missing, a cleanup-only `followup_task` is allowed. Substantive continuations still require fresh agents. This lifecycle guidance was checked September 5, 2026 against the [Codex V2 handler](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/handlers/multi_agents_v2.rs#L29-L43) and [residency implementation](https://github.com/openai/codex/blob/main/codex-rs/core/src/agent/control/residency.rs).
+
+## Model evidence and maintenance
+
+A conservative review completed September 5, 2026 checked the skills against [Build skills](https://learn.chatgpt.com/docs/build-skills), [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), and the model sources below.
+
+| Intended model | Official evidence checked | Review outcome |
+| --- | --- | --- |
+| GPT-6 Astra | [Model](https://developers.openai.com/api/docs/models/gpt-6-astra), [Astra guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra) | Medium supported; retain autonomy, explicit delegation boundaries, and proportionate verification. |
+| GPT-5.6 Sol | [Model](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [GPT-5.6 guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) | Medium supported; keep outcome, constraints, and acceptance clear while trimming repeated scaffolding. |
+| GPT-5.6 Luna | [Model](https://developers.openai.com/api/docs/models/gpt-5.6-luna), [Subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents) | Medium and xhigh supported; narrow, clear worker assignments remain appropriate. |
+| GPT-5.3 Codex Spark | [Current listing](https://learn.chatgpt.com/docs/models), [Spark notes](https://openai.com/index/introducing-gpt-5-3-codex-spark/) | Text-only preview; explicitly request checks. Confirm availability and requested medium effort through the active harness; these pages do not establish account-specific support. |
+
+Model pages describe API capabilities; they do not prove a particular Codex session's effective routing. Custom agent configuration can override spawn values. The review covered instructions, metadata, links, and scenario consistency, but did not benchmark live worker runs across these models.
+
+One-shot assignments, short cycle budgets, and exact model splits are this repository's workflow choices, not OpenAI performance guarantees. Preserve them unless the user changes the workflow. Assess future tuning on representative tasks before changing multiple instruction groups at once.
