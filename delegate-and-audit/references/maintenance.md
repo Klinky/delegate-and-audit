@@ -29,6 +29,11 @@ Use these cases for manual walkthroughs or authorized independent forward tests 
 | Situation | Expected behavior |
 | --- | --- |
 | Invoke the skill with two independent implementation slices | Active model orchestrates; spawn Luna/high with complete briefs and disjoint ownership; audit each result. |
+| Parent proposes writing the feature and assigning an agent to review it | Reject the reversed workflow; assign implementation to workers and retain independent audit with the parent. |
+| Worker output needs a small substantive fix | Give a fresh worker a narrow repair brief; do not fix it locally for convenience. |
+| Agent capacity or routing is blocked | Continue orchestration and resolve the blocker; parent implementation requires an explicit user override. |
+| Accepted slices require additional integration code | Delegate that code, then audit the combined result; integration ownership is not permission to implement. |
+| User asks only for review of an existing diff | Workers produce findings; parent checks original evidence and accepts or rejects each finding. |
 | Invoke with a different worker model and supported effort | Honor the override; do not select another skill or replace the orchestrator. |
 | Selected custom agent overrides the requested model, or model is unavailable | Surface the mismatch; do not claim requested routing occurred or silently substitute. |
 | Spawn accepts explicit routing but exposes no effective-model metadata | Continue without transcript searches or worker self-identification; distinguish requested from verified routing. |

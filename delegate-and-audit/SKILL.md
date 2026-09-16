@@ -1,13 +1,22 @@
 ---
 name: delegate-and-audit
-description: Delegate requested work to bounded subagents with detailed project context and independent adversarial audits. Use for delegation, parallel agents, or an independent agent review; accept worker model and reasoning overrides at invocation.
+description: Delegate execution to bounded worker agents, then independently audit their results as orchestrator. Use for requested delegation or parallel agent work; accept worker model and reasoning overrides at invocation.
 ---
 
 # Delegate and Audit
 
-The active model orchestrates and owns requirements, integration, and acceptance. Treat worker conclusions as unverified until checked against artifacts and primary evidence.
+The active model directs the work and audits worker results. Workers execute; the orchestrator independently verifies and accepts or rejects their output. Treat worker conclusions as unverified until checked against artifacts and primary evidence.
 
 Apply this workflow when the user invokes it or requests delegation, or applicable project instructions request agents. Discussing or editing the skill does not invoke its workflow. Delegate only a bounded slice that can run alongside useful independent work.
+
+## Division of responsibility
+
+- Delegate substantive implementation, artifact creation, research, and repairs to workers. Do not perform the deliverable yourself and use an agent only to review it; that does not satisfy this workflow.
+- The orchestrator owns requirements, decomposition, context gathering, interface decisions, dispatch, monitoring, independent verification, and final acceptance. While workers execute, prepare upcoming briefs, inspect relevant evidence, or audit completed slices.
+- Integration means applying or combining accepted worker output and checking its boundaries. It does not authorize new implementation or fixing worker defects yourself. Delegate integration code, conflict resolutions requiring design changes, and substantive repairs.
+- A worker may return a patch when it cannot write the workspace; the orchestrator may audit and apply that patch. Authorship remains with the worker.
+- If workers are unavailable, fail, or cannot receive a valid slice under host constraints, continue useful orchestration and report the specific blocker. Do not silently switch to parent implementation; obtain an explicit user override before changing that division of work.
+- For a review-only request, workers produce findings and the orchestrator verifies them. An additional reviewer may challenge worker output, but never replaces the orchestrator's own audit.
 
 ## Worker routing
 
@@ -26,7 +35,7 @@ spawn_agent:
   message: <self-contained assignment>
 ```
 
-Check exposed model support and any selected custom-agent settings: custom configuration can override spawn routing. Use returned metadata when available; do not search transcripts or ask workers to identify themselves. Missing effective-model metadata is not a blocker or proof of routing. If the requested combination is unsupported or contradicted by configuration, disclose it and use an authorized fallback; otherwise continue locally and ask only if delegation requires a choice.
+Check exposed model support and any selected custom-agent settings: custom configuration can override spawn routing. Use returned metadata when available; do not search transcripts or ask workers to identify themselves. Missing effective-model metadata is not a blocker or proof of routing. If the requested combination is unsupported or contradicted by configuration, disclose it and use an authorized worker fallback. Continue orchestration while resolving the routing choice; do not take over execution.
 
 ## Prepare the assignment
 
@@ -46,7 +55,7 @@ Use [brief and handoff templates](references/brief-and-audit.md) to specify one 
 
 ## Dispatch and monitor
 
-- Prefer independent research or disjoint edits. Serialize shared files, lockfiles, generated outputs, databases, ports, and build directories. Keep architectural decisions and integration with the orchestrator.
+- Prefer independent research or disjoint edits. Serialize shared files, lockfiles, generated outputs, databases, ports, and build directories. Keep architectural decisions and integration acceptance with the orchestrator; assign implementation to workers.
 - Name the next non-overlapping orchestrator action before spawning. Do it while workers run; never duplicate an active worker's implementation.
 - Tell workers to challenge the brief and promptly report contradictory evidence. They must not subdelegate, expand scope, revert unrelated edits, improvise sandboxes/worktrees, or alter permissions to unblock themselves.
 - Target first evidence in 2–5 minutes and handoff in 5–10. Split oversized work; let a named slow command finish when justified. Time alone is not proof of failure.
@@ -60,7 +69,7 @@ Require a final evidence handoff with completed/partial work, unresolved scope, 
 
 Use exposed lifecycle tools and their documented semantics. Interruption or a local "retired" label does not prove closure or capacity release. If cleanup information is missing, make one bounded cleanup request, using a follow-up turn only if needed. Record unresolved cleanup; do not transfer a scope while writes remain possible.
 
-On an agent-limit error, inspect the error and roster, settle pending activity, and retry once after a relevant state change. Do not raise limits or stop unrelated agents. Reclaim work locally only after ownership is clear.
+On an agent-limit error, inspect the error and roster, settle pending activity, and retry once after a relevant state change. Do not raise limits or stop unrelated agents. Queue the next worker assignment until capacity is available; transfer ownership only after prior writes have stopped.
 
 ## Adversarial acceptance
 
@@ -73,9 +82,9 @@ Confidence, agreement, and "tests pass" are claims, not proof. Independently def
 5. **Resolve contradictions.** Pause dependent work when evidence conflicts. Reproduce the conflict and correct the shared brief; do not vote between agents or prefer the most confident account.
 6. **Decide.** Mark material results accepted, rejected, or unresolved with evidence. Required checks that could not run remain unverified. Report that limit instead of claiming success.
 
-For difficult or consequential findings, use an independent reviewer when useful. Provide requirements and raw artifacts before the producer's interpretation when practical to reduce anchoring. Audit the reviewer too.
+For difficult or consequential worker results, an additional reviewer may supply counterexamples or evidence. Provide requirements and raw artifacts before the producer's interpretation when practical to reduce anchoring. Audit that review yourself; reviewer approval cannot satisfy final acceptance.
 
-For a failed audit, reclaim the scope after cleanup or give a fresh worker the failed check, current artifact state, and a narrower repair brief. Re-audit changed behavior and unresolved concerns; do not restart broad reviews after every small fix.
+For a failed audit, give a fresh worker the failed check, current artifact state, and a narrower repair brief after prior ownership is cleared. Do not implement the repair yourself. Re-audit changed behavior and unresolved concerns; do not restart broad reviews after every small fix.
 
 ## Finish
 
@@ -83,6 +92,6 @@ Use local evidence for repository facts and installed versions. Open current pri
 
 Use appropriate first-class tools and `apply_patch` for text edits. On Windows, keep filesystem operations in PowerShell with literal paths; do not pass discovered paths to another shell for moves/deletes.
 
-Complete authorized work within host permissions without adding approval ceremonies. Reconcile relevant workers and artifacts before reporting the outcome, meaningful validation, and unresolved limits.
+Complete authorized work within host permissions without adding approval ceremonies. Before completion, confirm substantive deliverables came from workers and that you independently audited them. A parent-authored deliverable with agent review is not compliant unless the user explicitly changed the division of work. Reconcile relevant workers and artifacts before reporting the outcome, meaningful validation, and unresolved limits.
 
 See [maintenance notes](references/maintenance.md) for sources and behavioral review cases. Luna/high, short cycles, and one-shot assignments are repository choices, not platform requirements.

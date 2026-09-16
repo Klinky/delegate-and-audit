@@ -1,6 +1,6 @@
 # Delegate and Audit
 
-One Codex skill for bounded delegation and skeptical independent verification. The active model orchestrates; workers default to **GPT-5.6 Luna with high reasoning**.
+One Codex skill for bounded delegation and skeptical independent verification. Workers perform the substantive work and repairs; the active model directs them and independently audits their results. Workers default to **GPT-5.6 Luna with high reasoning**.
 
 Use [delegate-and-audit/SKILL.md](delegate-and-audit/SKILL.md):
 
@@ -14,7 +14,7 @@ Specify a worker model, reasoning effort, or both when invoking the skill. No co
 ## What it does
 
 - Gives workers concrete project architecture, current state, instructions, environment, permission boundaries, commands, and acceptance criteria.
-- Assigns short, disjoint slices while the orchestrator handles decisions and integration.
+- Assigns execution and repairs to workers while the orchestrator handles decisions, coordination, and independent acceptance. Parent implementation followed by agent review does not satisfy this workflow.
 - Uses the existing Codex sandbox and verifies shared artifact access; workers cannot improvise environments or repair permissions with broad ACL/ownership changes.
 - Challenges agent premises, checks original sources and actual diffs, attempts counterexamples, and independently validates behavior before dependent work proceeds.
 - Reconciles every worker, running command, and artifact before final acceptance.

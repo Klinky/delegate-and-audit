@@ -7,7 +7,8 @@ Use these as compact working notes, not a required report ceremony. Fill in real
 ```text
 Outcome: one concrete result and why the user needs it.
 Ownership: exact writable paths, or read-only question; explicit exclusions.
-Parent/other workers: concurrent scopes and shared resources to avoid.
+Parent: requirements, coordination, independent audit, and acceptance.
+Other workers: concurrent execution scopes and shared resources to avoid.
 Project: relevant architecture, interfaces, invariants, conventions, accepted decisions.
 State: absolute repo path, relevant revision, existing changes, current artifacts.
 Instructions: applicable instruction paths and the rules affecting this slice.
@@ -50,6 +51,7 @@ For each material claim, record: claim → source/artifact → independent check
 
 Ask:
 
+- Did workers produce the substantive deliverable and repairs, and did I independently audit them? Parent implementation followed by agent review does not satisfy this workflow.
 - What directly establishes the premise? Could this be a different environment, stale index, wrong version, permissions problem, or baseline failure?
 - What would make this conclusion false? Did I actually check that case?
 - Do the cited lines show a reachable defect or merely a suspicious pattern?
