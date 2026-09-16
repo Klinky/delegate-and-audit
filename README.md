@@ -1,46 +1,32 @@
-# Delegate and Audit Skills
+# Delegate and Audit
 
-Five Codex skills for explicitly requested delegation, bounded parallel work, and independent audit. Each uses short, one-shot helpers while the parent retains responsibility for reconciliation and final acceptance.
+One Codex skill for bounded delegation and skeptical independent verification. The active model orchestrates; workers default to **GPT-5.6 Luna with high reasoning**.
 
-## Choose a skill
+Use [delegate-and-audit/SKILL.md](delegate-and-audit/SKILL.md):
 
-The skills live in sibling directories. Use the generic skill for ordinary delegation, or select a Big Little variant when the user explicitly requests its model split.
+```text
+Use $delegate-and-audit to implement these independent changes.
+Use $delegate-and-audit with gpt-5.6-terra workers at medium reasoning to review this diff.
+```
 
-| Skill | Controller | Workers | Intended workflow |
-| --- | --- | --- | --- |
-| [Delegate and Audit](delegate-and-audit/SKILL.md) | No prescribed model | No prescribed model | General delegation and independent audit. |
-| [Big Little](big-little-delegate-and-audit/SKILL.md) | GPT-5.6 Sol | GPT-5.6 Luna `xhigh` | Short worker cycles with high useful concurrency. |
-| [Astra](big-little-delegate-and-audit-astra/SKILL.md) | GPT-6 Astra `medium` | GPT-5.6 Luna `medium` | Astra orchestration and audit of short worker cycles. |
-| [Fast](big-little-delegate-and-audit-fast/SKILL.md) | GPT-5.6 Sol `medium` | GPT-5.6 Luna `medium` | Lower-latency orchestration and audit. |
-| [Spark](big-little-delegate-and-audit-spark/SKILL.md) | GPT-5.6 Sol `medium` | GPT-5.3 Codex Spark `medium` | The Fast workflow with Spark workers. |
+Specify a worker model, reasoning effort, or both when invoking the skill. No controller model selection or separate variant is needed. The skill checks the host's supported settings and reports routing mismatches rather than silently substituting.
 
-## Shared workflow
+## What it does
 
-Before dispatch, each assignment must have a finite outcome, exact boundaries, current inputs and dependencies, a defined deliverable, objective acceptance checks, a short budget, and a stop condition. Large projects become successive waves of independently auditable microtasks, keeping worker context small and write ownership disjoint.
+- Gives workers concrete project architecture, current state, instructions, environment, permission boundaries, commands, and acceptance criteria.
+- Assigns short, disjoint slices while the orchestrator handles decisions and integration.
+- Uses the existing Codex sandbox and verifies shared artifact access; workers cannot improvise environments or repair permissions with broad ACL/ownership changes.
+- Challenges agent premises, checks original sources and actual diffs, attempts counterexamples, and independently validates behavior before dependent work proceeds.
+- Reconciles every worker, running command, and artifact before final acceptance.
 
-The parent collects each handoff, retires the helper from substantive work, and audits its result. Helper output is evidence, not completion: every helper must be reconciled before final acceptance. Continuations and failed-audit repairs use fresh agents with smaller context and more precise evidence.
+Worker confidence or agreement is never enough. The parent must be able to defend each material conclusion with evidence.
 
-The freshness gate grounds changeable behavior in current workspace evidence and primary official sources. Model memory alone is unverified. When exact runtime identity matters, check exposed session metadata or status, then the current session JSONL's explicit model field; environment variables alone are insufficient. Identity and cutoff metadata remain optional context, and missing metadata does not block work. For the generic skill, check the selected model's current capabilities when they affect the assignment.
+## Consolidation
 
-Prefer first-class agent and workspace tools. Reserve shell for operations that inherently execute local processes, such as tests and version-control commands, or use it as a batched last resort when the harness exposes no non-shell filesystem capability. On Windows, keep unavoidable shell work PowerShell-native and use literal paths.
+The previous Big Little, Astra, Fast, and Spark skill directories have been removed. All invocations now use `$delegate-and-audit` with optional worker overrides. If you previously installed copies of those variants outside this repository, replace or disable those copies in your installed skill location; updating this repository alone does not remove external installations.
 
-## Codex V2 agent lifecycle
+## Guidance and validation
 
-V2 has no manual close command. Workers finish with a final handoff confirming no remaining work or running commands. The orchestrator verifies completion and resolves pending activity so Codex can reclaim eligible agents automatically; confirmation alone does not prove capacity release.
+The [sandbox reference](delegate-and-audit/references/sandbox-and-workspaces.md) covers native Windows, Linux, WSL2, protected paths, access probes, and bounded recovery. The [brief and audit templates](delegate-and-audit/references/brief-and-audit.md) make context and evidence requirements concrete.
 
-When confirmation is missing, a cleanup-only `followup_task` is allowed. Substantive continuations still require fresh agents. This lifecycle guidance was checked September 5, 2026 against the [Codex V2 handler](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/handlers/multi_agents_v2.rs#L29-L43) and [residency implementation](https://github.com/openai/codex/blob/main/codex-rs/core/src/agent/control/residency.rs).
-
-## Model evidence and maintenance
-
-A conservative review completed September 5, 2026 checked the skills against [Build skills](https://learn.chatgpt.com/docs/build-skills), [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), and the model sources below.
-
-| Intended model | Official evidence checked | Review outcome |
-| --- | --- | --- |
-| GPT-6 Astra | [Model](https://developers.openai.com/api/docs/models/gpt-6-astra), [Astra guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra) | Medium supported; retain autonomy, explicit delegation boundaries, and proportionate verification. |
-| GPT-5.6 Sol | [Model](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [GPT-5.6 guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) | Medium supported; keep outcome, constraints, and acceptance clear while trimming repeated scaffolding. |
-| GPT-5.6 Luna | [Model](https://developers.openai.com/api/docs/models/gpt-5.6-luna), [Subagent guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents) | Medium and xhigh supported; narrow, clear worker assignments remain appropriate. |
-| GPT-5.3 Codex Spark | [Current listing](https://learn.chatgpt.com/docs/models), [Spark notes](https://openai.com/index/introducing-gpt-5-3-codex-spark/) | Text-only preview; explicitly request checks. Confirm availability and requested medium effort through the active harness; these pages do not establish account-specific support. |
-
-Model pages describe API capabilities; they do not prove a particular Codex session's effective routing. Custom agent configuration can override spawn values. The review covered instructions, metadata, links, and scenario consistency, but did not benchmark live worker runs across these models.
-
-One-shot assignments, short cycle budgets, and exact model splits are this repository's workflow choices, not OpenAI performance guarantees. Preserve them unless the user changes the workflow. Assess future tuning on representative tasks before changing multiple instruction groups at once.
+[September 2026 maintenance notes](delegate-and-audit/references/maintenance.md) list current official OpenAI sources, repository-specific choices, documentation limits, and behavioral review cases. This is workflow guidance, not a guarantee of model correctness or cross-platform sandbox compatibility.
