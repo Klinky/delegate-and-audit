@@ -1,4 +1,4 @@
 interface:
   display_name: "Delegate and Audit"
   short_description: "Delegate with context; challenge every result."
-  default_prompt: "Use $delegate-and-audit: assign execution and repairs to workers, and independently audit their results as orchestrator."
+  default_prompt: "Use $delegate-and-audit: split execution across as many useful parallel workers as capacity allows, manage their lifecycle, and independently audit their results."

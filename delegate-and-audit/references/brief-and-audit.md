@@ -21,7 +21,8 @@ Evidence: verified facts with file/line or URL/version/date; label hypotheses.
 Question: assumptions to challenge, plausible alternative, known unknowns.
 Deliverable: exact artifact, patch, or finding format.
 Acceptance: observable behavior/checks, edge cases, evidence required.
-Budget/stop: short handoff target; pause affected work on scope expansion,
+Budget/stop: checkpoint time, total handoff deadline, and named slow commands;
+  report process/session ids for running commands. Pause affected work on scope expansion,
   invalid premise, access denial, or missing prerequisite; return evidence
   and continue any independent work still within the assignment.
 Constraints: no subdelegation, unrelated reverts, permission changes, new
@@ -52,6 +53,7 @@ For each material claim, record: claim → source/artifact → independent check
 Ask:
 
 - Did workers produce the substantive deliverable and repairs, and did I independently audit them? Parent implementation followed by agent review does not satisfy this workflow.
+- Did I dispatch all useful independent slices up to available capacity and refill slots?
 - What directly establishes the premise? Could this be a different environment, stale index, wrong version, permissions problem, or baseline failure?
 - What would make this conclusion false? Did I actually check that case?
 - Do the cited lines show a reachable defect or merely a suspicious pattern?

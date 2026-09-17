@@ -8,6 +8,7 @@ Reviewed September 15, 2026. These are documentation findings and repository wor
 | --- | --- |
 | [Build skills](https://learn.chatgpt.com/docs/build-skills) | One focused entry point; conditional detail in references; concise trigger and realistic behavioral checks. |
 | [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) | Narrow assignments, deliberate context, cautious concurrent writes, explicit worker routing, permission inheritance and custom-agent override awareness. |
+| [Current delegation prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#subagent-delegation) | Explicitly request broad useful parallelism; fill available capacity with ready slices and refill as results arrive. |
 | [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) | Exact model supports high reasoning. Availability/effective routing still depends on the active harness. |
 | [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) | Specify context, constraints and success criteria; evaluate behavior rather than prescribing every reasoning step. |
 | [Current model guidance](https://developers.openai.com/api/docs/guides/latest-model) | Remove rigid controller identity and redundant process requirements; keep verification proportionate. This page currently describes Astra, not Luna-specific prompting. |
@@ -24,11 +25,18 @@ Luna/high, one-shot assignments, access probes, and the adversarial acceptance p
 
 ## Behavioral review cases
 
+Lifecycle review: current public guidance covers product-level steering/stopping/closing; the exposed collaboration schema supplies exact tool semantics. It has no close tool, and interruption leaves an agent available. The [lifecycle reference](agent-lifecycle.md) distinguishes execution, audit, process cleanup, and capacity without assuming undocumented reclamation behavior.
+
 Use these cases for manual walkthroughs or authorized independent forward tests after changes. Evaluate decisions and evidence, not exact wording.
 
 | Situation | Expected behavior |
 | --- | --- |
 | Invoke the skill with two independent implementation slices | Active model orchestrates; spawn Luna/high with complete briefs and disjoint ownership; audit each result. |
+| Six independent slices, three available worker slots | Start three before waiting; audit and refill each freed slot without a whole-wave barrier. |
+| Implementation slices share write dependencies | Dispatch useful independent research/exploration alongside the active writer, then schedule dependent implementation after prerequisites are accepted. |
+| One worker stops progressing while others finish | Inspect status, request one bounded checkpoint, interrupt if unresolved, reconcile processes, and replace only after writes stop; keep other scopes moving. |
+| Idle worker needs cleanup information | Use one cleanup-only follow-up; a message alone does not start its turn. |
+| Completed agents remain listed and the next spawn hits a limit | Inspect capacity semantics and pending activity; retry after a relevant change, without inventing a close tool or busy-looping. |
 | Parent proposes writing the feature and assigning an agent to review it | Reject the reversed workflow; assign implementation to workers and retain independent audit with the parent. |
 | Worker output needs a small substantive fix | Give a fresh worker a narrow repair brief; do not fix it locally for convenience. |
 | Agent capacity or routing is blocked | Continue orchestration and resolve the blocker; parent implementation requires an explicit user override. |

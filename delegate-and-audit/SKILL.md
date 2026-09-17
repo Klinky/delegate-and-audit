@@ -7,7 +7,7 @@ description: Delegate execution to bounded worker agents, then independently aud
 
 The active model directs the work and audits worker results. Workers execute; the orchestrator independently verifies and accepts or rejects their output. Treat worker conclusions as unverified until checked against artifacts and primary evidence.
 
-Apply this workflow when the user invokes it or requests delegation, or applicable project instructions request agents. Discussing or editing the skill does not invoke its workflow. Delegate only a bounded slice that can run alongside useful independent work.
+Apply this workflow when the user invokes it or requests delegation, or applicable project instructions request agents. Discussing or editing the skill does not invoke its workflow. Split execution across as many useful, independent worker assignments as the active harness and user limits allow.
 
 ## Division of responsibility
 
@@ -55,13 +55,16 @@ Use [brief and handoff templates](references/brief-and-audit.md) to specify one 
 
 ## Dispatch and monitor
 
+- Build a queue of small, independently auditable slices before dispatch. Launch all ready slices up to available capacity before waiting for results; do not default to one worker for the entire task. Read the actual capacity limit and whether it includes the parent instead of hardcoding an agent count.
+- Actively look for parallel work by behavior, module, interface, research question, or test group. When implementation dependencies prevent more writers, dispatch bounded read-only exploration or prerequisite research that advances the task. Do not invent busywork, duplicate assignments, or conflicting writers to fill slots.
+- Keep slots occupied while useful ready work remains. Process each handoff and audit as it arrives, then dispatch the next independent slice without waiting for the whole wave. Dependent slices start only after their prerequisite evidence is accepted.
 - Prefer independent research or disjoint edits. Serialize shared files, lockfiles, generated outputs, databases, ports, and build directories. Keep architectural decisions and integration acceptance with the orchestrator; assign implementation to workers.
 - Name the next non-overlapping orchestrator action before spawning. Do it while workers run; never duplicate an active worker's implementation.
 - Tell workers to challenge the brief and promptly report contradictory evidence. They must not subdelegate, expand scope, revert unrelated edits, improvise sandboxes/worktrees, or alter permissions to unblock themselves.
 - Target first evidence in 2–5 minutes and handoff in 5–10. Split oversized work; let a named slow command finish when justified. Time alone is not proof of failure.
 - Keep assignments one-shot. New work and substantive repairs use fresh workers with corrected, narrower briefs.
 - Process checkpoints promptly. Investigate early claims, but verify their premises before dependent implementation or scope changes.
-- Use bounded event waits within host communication limits. After unexpected silence, compaction, or a failed spawn, reconcile the roster and commands rather than busy-polling.
+- Use bounded event waits within host communication limits. A wait timeout is not a failure or completion signal. Follow [agent lifecycle and recovery](references/agent-lifecycle.md) from first dispatch through final cleanup, particularly after silence, compaction, or a failed spawn.
 
 ## Reconcile ownership
 
@@ -69,7 +72,7 @@ Require a final evidence handoff with completed/partial work, unresolved scope, 
 
 Use exposed lifecycle tools and their documented semantics. Interruption or a local "retired" label does not prove closure or capacity release. If cleanup information is missing, make one bounded cleanup request, using a follow-up turn only if needed. Record unresolved cleanup; do not transfer a scope while writes remain possible.
 
-On an agent-limit error, inspect the error and roster, settle pending activity, and retry once after a relevant state change. Do not raise limits or stop unrelated agents. Queue the next worker assignment until capacity is available; transfer ownership only after prior writes have stopped.
+On an agent-limit error, use the lifecycle reference's bounded recovery procedure. Do not raise limits or stop unrelated agents. Keep independent scopes moving; never wait indefinitely on one stalled agent or transfer its write scope while activity is uncertain.
 
 ## Adversarial acceptance
 

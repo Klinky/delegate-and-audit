@@ -15,6 +15,8 @@ Specify a worker model, reasoning effort, or both when invoking the skill. No co
 
 - Gives workers concrete project architecture, current state, instructions, environment, permission boundaries, commands, and acceptance criteria.
 - Assigns execution and repairs to workers while the orchestrator handles decisions, coordination, and independent acceptance. Parent implementation followed by agent review does not satisfy this workflow.
+- Splits work across as many useful independent agents as capacity allows, launching ready slices before waiting and refilling slots as handoffs arrive.
+- Uses a bounded [agent lifecycle procedure](delegate-and-audit/references/agent-lifecycle.md) to detect stalls, reconcile running processes, and recover capacity without overlapping writers.
 - Uses the existing Codex sandbox and verifies shared artifact access; workers cannot improvise environments or repair permissions with broad ACL/ownership changes.
 - Challenges agent premises, checks original sources and actual diffs, attempts counterexamples, and independently validates behavior before dependent work proceeds.
 - Reconciles every worker, running command, and artifact before final acceptance.
