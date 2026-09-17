@@ -49,9 +49,13 @@ Inspect applicable instructions, relevant source, manifests/lockfiles, setup doc
 
 Include only relevant detail, but enough to work without parent history. Do not substitute "see the repo" for a brief or send secrets and unrelated logs. A read-only explorer can resolve a precise unknown before implementation starts.
 
-Before filesystem-writing delegation, read [sandbox and workspace guidance](references/sandbox-and-workspaces.md). The orchestrator owns workspace preparation; workers use the assigned environment.
+Before filesystem-writing delegation, read [sandbox and workspace guidance](references/sandbox-and-workspaces.md). The orchestrator owns workspace and toolchain preparation; workers use the assigned environment.
+
+For code changes, prepare the project's declared development dependencies and CI commands for linting, type checking, and tests wherever configured or required. Verify tool execution against project files with accessible dependencies and writable cache/temp locations; reuse existing evidence for the same environment. Record whether execution required approval and teach workers that approval path. Do not require sandbox-only success when the host supports approved execution, or treat a parent approval as blanket worker authorization. Keep setup checks proportionate rather than running the full suite before every dispatch. Distinguish baseline source failures from tooling failures. Compilation and focused contract checks do not replace required linting, type checking, or tests.
 
 Use [brief and handoff templates](references/brief-and-audit.md) to specify one finite outcome, exact ownership, completed prerequisites, deliverable, acceptance checks, budget, and stop condition. Keep a compact roster of agent ids, scopes, dependencies, running commands, and audit states.
+
+Explain the worker's actual command-level approval mechanism in the brief, using the [permission-request guidance](references/sandbox-and-workspaces.md#command-permission-requests). Workers should request permitted additional access themselves for necessary blocked commands, rather than abandon checks or return execution to the parent. Use only fields exposed by the host and allowed by session policy. An initial sandbox failure is not an approval rejection; a rejected request must not be bypassed.
 
 ## Dispatch and monitor
 
@@ -60,7 +64,7 @@ Use [brief and handoff templates](references/brief-and-audit.md) to specify one 
 - Keep slots occupied while useful ready work remains. Process each handoff and audit as it arrives, then dispatch the next independent slice without waiting for the whole wave. Dependent slices start only after their prerequisite evidence is accepted.
 - Prefer independent research or disjoint edits. Serialize shared files, lockfiles, generated outputs, databases, ports, and build directories. Keep architectural decisions and integration acceptance with the orchestrator; assign implementation to workers.
 - Name the next non-overlapping orchestrator action before spawning. Do it while workers run; never duplicate an active worker's implementation.
-- Tell workers to challenge the brief and promptly report contradictory evidence. They must not subdelegate, expand scope, revert unrelated edits, improvise sandboxes/worktrees, or alter permissions to unblock themselves.
+- Tell workers to challenge the brief and promptly report contradictory evidence. They must not subdelegate, expand scope, revert unrelated edits, improvise sandboxes/worktrees, or alter ACLs or persistent permission configuration to unblock themselves. Command-level escalation requests use the approval mechanism described above.
 - Target first evidence in 2–5 minutes and handoff in 5–10. Split oversized work; let a named slow command finish when justified. Time alone is not proof of failure.
 - Keep assignments one-shot. New work and substantive repairs use fresh workers with corrected, narrower briefs.
 - Process checkpoints promptly. Investigate early claims, but verify their premises before dependent implementation or scope changes.

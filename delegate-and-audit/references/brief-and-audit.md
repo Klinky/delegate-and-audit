@@ -16,16 +16,25 @@ Environment: OS, shell, execution target, cwd, runtime executable/version,
   package manager/lockfile, environment activation, required services.
 Permissions: effective writable/protected roots, network/approval constraints,
   designated scratch/output paths, known access failures and safe fallback.
-Commands: exact checks and working directories; known baseline failures.
+Escalation: state the available tool fields and whether session policy permits requests.
+  Prefer scoped additional permissions if exposed and sufficient; otherwise use
+  sandbox_permissions="require_escalated" when supported, with justification as a
+  short approval question naming the command and why it needs access. Keep the
+  command and cwd scoped to the assignment. Request approval through the tool;
+  do not stop at the first sandbox error or return execution to the parent merely
+  because it needs approval. If unavailable or rejected, report it; do not bypass it.
+Commands: verified lint, type-check, and test commands wherever configured or required;
+  working directories, tool paths, cache/temp locations, known baseline failures,
+  and execution evidence including any required approval path.
 Evidence: verified facts with file/line or URL/version/date; label hypotheses.
 Question: assumptions to challenge, plausible alternative, known unknowns.
 Deliverable: exact artifact, patch, or finding format.
 Acceptance: observable behavior/checks, edge cases, evidence required.
 Budget/stop: checkpoint time, total handoff deadline, and named slow commands;
   report process/session ids for running commands. Pause affected work on scope expansion,
-  invalid premise, access denial, or missing prerequisite; return evidence
+  invalid premise, unavailable/rejected required escalation, or missing prerequisite; return evidence
   and continue any independent work still within the assignment.
-Constraints: no subdelegation, unrelated reverts, permission changes, new
+Constraints: no subdelegation, unrelated reverts, persistent permission changes, new
   environments or worktrees. You share the workspace; respect other writers.
 Checkpoint: promptly report evidence that changes direction or blocks progress.
 Final handoff: evidence below; end the turn and report any remaining activity.
@@ -38,7 +47,7 @@ For a fresh worker, include essential facts directly rather than making it recon
 - Result: completed, partial, or blocked; exact changed paths or findings.
 - Claims: distinguish observed facts from explanations and recommendations.
 - Evidence: source location/revision, minimal reproduction/input, expected and actual behavior.
-- Checks: command, cwd, environment, exit status, and relevant output/artifact path. Distinguish passed, failed, skipped, and not run.
+- Checks: command, cwd, environment, exit status, and relevant output/artifact path. Distinguish passed, failed, skipped, and not run; include any escalation request and its outcome.
 - Challenges: strongest counterexample or alternative considered; what remains unproven.
 - Freshness: relevant local versions and opened primary sources for external claims.
 - Ownership/access: artifacts left behind, scratch paths, accessibility problems.

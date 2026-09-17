@@ -25,6 +25,8 @@ A probe proves access to that location with those tools, not blanket access to t
 
 ## Native Windows
 
+Prepare the project's development toolchain in an authorized location accessible to the worker execution context before assigning code changes. Prefer the project's established virtualenv/package-manager environment and pinned development dependencies. Do not select an app-bundled executable merely because it exists, or assume user-profile tools are executable by sandbox identities. Verify the actual lint, type-check, and test commands against project files, including child executables and cache/temp writes. Use explicit runtime/tool paths or the project's verified runner so workers do not resolve a different installation through PATH. Provision any needed dependencies once through the supported setup/permission flow before dispatch; workers should receive a ready environment. A skill cannot grant OS execution permissions.
+
 Current official guidance prefers the `elevated` native sandbox, which uses dedicated lower-privilege users; `unelevated` uses a restricted token and weaker isolation. "Elevated sandbox" describes administrator-approved setup, not a reason to run builds as Administrator. Keep the configured mode; workers must not switch it. Source: [Windows sandbox](https://learn.chatgpt.com/docs/windows/windows-sandbox).
 
 For an access failure, collect the exact failing command/tool, cwd, resolved target, error code, and effective permission mode. Inspect only relevant metadata using `Get-Item -LiteralPath`, `Get-Acl -LiteralPath`, or read-only `icacls`; compare parent and worker access. Check identity, inherited/explicit deny entries, reparse targets, and process locks as appropriate. Do not assume every "access denied" error is an ACL defect.
@@ -47,6 +49,17 @@ Keep Windows-native and WSL execution contexts distinct. For an established WSL 
 
 Protected `.git`, `.agents`, and `.codex` paths can remain read-only within a writable root, including worktree Git pointers. A Git/config write failure may therefore be expected policy, not damaged filesystem permissions. Sandbox controls and approval policy are distinct. Source: [Agent approvals and security](https://learn.chatgpt.com/docs/agent-approvals-security).
 
-After a denied operation, stop equivalent retries, retain the error and useful artifacts, and distinguish policy denial from OS ownership/ACL, mount, missing path, lock, or runtime setup failure. Prefer an existing authorized location, read-only investigation, or an audited text patch. Continue unaffected work. If required work still needs a permission/setup change, use the supported narrowly scoped approval flow with the concrete path/action and reason. Do not request full access or disable security as a generic fix.
+After a denied operation, retain the error and useful artifacts and distinguish a sandbox execution failure from a rejected approval request. Use the command-permission procedure below for necessary sandbox-blocked commands; do not repeat failures under unchanged permissions. Investigate OS ownership/ACL, mount, missing path, lock, or runtime setup failures when the evidence points there.
 
 Do not blindly move an inaccessible tree into the project: ownership or ACLs can follow it. If recovery requires copying readable content to a newly prepared directory, audit the contents, create them using the parent's normal tools, verify resulting access, and preserve the original until recovery is confirmed. Do not change ACLs or delete the inaccessible original without appropriate authorization.
+
+## Command permission requests
+
+Include the host's actual request mechanism in worker briefs. When session policy permits requests, workers should request the access needed for necessary blocked commands themselves. No parent handoff or separate chat confirmation is needed before making the tool request.
+
+- If the execution schema exposes `with_additional_permissions` and `additional_permissions`, prefer a scoped filesystem/network grant when it can satisfy the command. Do not invent these fields on hosts that lack them.
+- If narrower grants are unavailable or insufficient and `require_escalated` is supported, retry the scoped command with `sandbox_permissions: "require_escalated"`. Supply `justification` as a short approval question naming the action and why it needs access. For example: "May I run this project's Ruff check outside the sandbox after its executable received Access denied?" Keep the same intended check and cwd.
+- Approval is evaluated by the host's configured reviewer and policy. `never` or other rejecting policies cannot be overridden by skill instructions. Tool availability alone does not prove a request is permitted. If unavailable or rejected, report the command, error, and approval outcome; continue unaffected work and leave the check unverified.
+- Command escalation does not change persistent sandbox configuration or mean running as Windows Administrator. Existing allow rules or scoped grants may be reused by the host; do not assume either blanket inheritance of a parent's approval or that every command needs a fresh prompt. Do not request broad interpreter prefixes, change ACLs, disable security, or disguise an operation to bypass rejection.
+
+These branches follow the current Codex permission prompts; see the commit-pinned evidence in [maintenance notes](maintenance.md#source-code-audit).
