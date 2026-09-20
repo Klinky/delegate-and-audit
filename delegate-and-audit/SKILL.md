@@ -7,7 +7,18 @@ description: Delegate execution to bounded worker agents, then independently aud
 
 The active model directs the work and audits worker results. Workers execute; the orchestrator independently verifies and accepts or rejects their output. Treat worker conclusions as unverified until checked against artifacts and primary evidence.
 
-Apply this workflow when the user invokes it or requests delegation, or applicable project instructions request agents. Discussing or editing the skill does not invoke its workflow. Split execution across as many useful, independent worker assignments as the active harness and user limits allow.
+Apply this workflow when the user invokes it or requests delegation, or applicable project instructions request agents. Discussing or editing the skill does not invoke its workflow. Size delegation to the requested outcome and its actual dependencies, within the active harness and user limits.
+
+## Scope, speed, and completion
+
+Optimize for the shortest time to a correct, independently verified result that fulfills the user's request. Keep exploration, implementation, delegation, verification, and communication proportional to the task.
+
+- Before dispatch, identify the requested result, material constraints, exclusions, and observable completion checks. Keep these compact; straightforward tasks do not require a formal plan. Every assignment and substantive change must serve that result or an evidenced prerequisite.
+- Use the smallest coherent solution that fixes the relevant cause and preserves required behavior, following existing patterns. Defer unrelated cleanup, speculative hardening, new abstractions, and architectural redesign. Worker discoveries and recommendations do not authorize additional work.
+- Before adding work, identify the requirement or concrete failure that makes it necessary. Complete routine supporting changes through workers within existing authorization. If materially broader behavior or architecture changes are genuinely required, present the evidence and obtain user direction before undertaking them; continue independent authorized work.
+- Resolve the uncertainty controlling implementation with targeted inspection, a reproduction, or a focused check, then implement promptly. Further investigation must answer a specific unresolved question needed for completion.
+- Independently verify scope, the relevant diff, and behavior. Passing tests does not justify unrelated changes. Complete required checks and focused verification; repeat or broaden them only when new changes, failures, or unresolved risks warrant it.
+- Stop when the requested outcome and required checks are satisfied. Keep updates and the final handoff concise, with meaningful evidence and material limitations. Optional improvements remain follow-ups.
 
 ## Division of responsibility
 
@@ -59,13 +70,13 @@ Explain the worker's actual command-level approval mechanism in the brief, using
 
 ## Dispatch and monitor
 
-- Build a queue of small, independently auditable slices before dispatch. Launch all ready slices up to available capacity before waiting for results; do not default to one worker for the entire task. Read the actual capacity limit and whether it includes the parent instead of hardcoding an agent count.
-- Actively look for parallel work by behavior, module, interface, research question, or test group. When implementation dependencies prevent more writers, dispatch bounded read-only exploration or prerequisite research that advances the task. Do not invent busywork, duplicate assignments, or conflicting writers to fill slots.
-- Keep slots occupied while useful ready work remains. Process each handoff and audit as it arrives, then dispatch the next independent slice without waiting for the whole wave. Dependent slices start only after their prerequisite evidence is accepted.
+- Assign small, independently auditable slices. Use additional workers only when a concrete, independent assignment is likely to reduce completion time or address a material correctness risk after accounting for coordination and integration. One worker and unused capacity are valid. Read the actual capacity limit and whether it includes the parent instead of hardcoding an agent count.
+- Parallelize justified independent slices without inventing work to fill slots. When write dependencies prevent more writers, add read-only exploration or prerequisite research only for a specific unresolved question needed by the task. Do not duplicate assignments or create conflicting writers.
+- Process each handoff and audit as it arrives. Dispatch further justified slices without waiting for the whole wave; dependent slices start only after their prerequisite evidence is accepted. Capacity is a limit, not a utilization target.
 - Prefer independent research or disjoint edits. Serialize shared files, lockfiles, generated outputs, databases, ports, and build directories. Keep architectural decisions and integration acceptance with the orchestrator; assign implementation to workers.
 - Name the next non-overlapping orchestrator action before spawning. Do it while workers run; never duplicate an active worker's implementation.
 - Tell workers to challenge the brief and promptly report contradictory evidence. They must not subdelegate, expand scope, revert unrelated edits, improvise sandboxes/worktrees, or alter ACLs or persistent permission configuration to unblock themselves. Command-level escalation requests use the approval mechanism described above.
-- Target first evidence in 2–5 minutes and handoff in 5–10. Split oversized work; let a named slow command finish when justified. Time alone is not proof of failure.
+- Set checkpoints proportional to the assignment. For work expected to take only a few minutes, roughly five minutes without decisive evidence or a usable change triggers reassessment: identify the blocker and simplify, narrow, or change the approach. Let a justified slow command finish. Elapsed time never permits skipping required checks, claiming completion, or treating a timeout alone as failure.
 - Keep assignments one-shot. New work and substantive repairs use fresh workers with corrected, narrower briefs.
 - Process checkpoints promptly. Investigate early claims, but verify their premises before dependent implementation or scope changes.
 - Use bounded event waits within host communication limits. A wait timeout is not a failure or completion signal. Follow [agent lifecycle and recovery](references/agent-lifecycle.md) from first dispatch through final cleanup, particularly after silence, compaction, or a failed spawn.

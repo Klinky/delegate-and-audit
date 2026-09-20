@@ -21,10 +21,10 @@ There is no close tool in this interface. Never invent one. On another harness, 
 
 ## State and next action
 
-1. **Queued:** prerequisites and ownership are clear. Dispatch up to available capacity. Keep dependent slices queued.
+1. **Queued:** necessity, prerequisites, and ownership are clear. Dispatch justified independent slices within available capacity. Keep dependent slices queued; unused capacity is valid.
 2. **Running:** perform independent orchestration. Consume useful checkpoints and update the last-progress time; a status message without evidence is not progress.
 3. **Handoff received:** capture the report and actual artifacts. Confirm no outstanding writes/tools, then retire the worker from substantive reuse and audit the result. Do not send unnecessary acknowledgements that create pending messages.
-4. **Accepted:** release the scope and unlock dependent slices. Refill available slots with ready work.
+4. **Accepted:** release the scope and unlock dependent slices. Dispatch further ready work only when it serves the requested outcome and justifies coordination costs.
 5. **Rejected or partial:** retain useful artifacts, clear prior activity, and dispatch a fresh worker with a smaller, corrected brief. A stopped worker's partial edits still require audit.
 6. **Blocked or stalled:** apply the bounded procedure below. Keep unrelated scopes running.
 
@@ -32,7 +32,7 @@ Execution state, audit state, and capacity are separate facts. A completed worke
 
 ## Bounded stall recovery
 
-- Set a checkpoint and total budget in the brief; ordinarily first evidence in 2–5 minutes and handoff in 5–10. Record named slow commands separately. Do not interrupt useful progress just because one wait timed out.
+- Set a proportional checkpoint and expected handoff time in the brief. For work expected to take only a few minutes, roughly five minutes without decisive evidence or a usable change triggers reassessment of the blocker and approach. Record justified slow commands separately. Reassessment is not permission to skip checks, declare success, or interrupt useful progress just because one wait timed out.
 - At a missed checkpoint or unexpected silence, inspect the roster and available output/process status. Distinguish useful long-running work from a tool failure, missing approval/input, scope growth, or no progress.
 - If the worker is running but its state is unclear, send one request for concrete progress, blockers, running commands, and a partial handoff. Give it a short explicit deadline within the remaining slice budget, ordinarily 1–2 minutes; use bounded waits and keep user updates flowing.
 - At the deadline without meaningful progress, or on unsafe/scope-drifting activity, interrupt the worker. Preserve artifacts and inspect its known command sessions. Stop task-owned commands through supported process tools when necessary; never kill unrelated processes.

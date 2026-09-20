@@ -6,6 +6,8 @@ Use these as compact working notes, not a required report ceremony. Fill in real
 
 ```text
 Outcome: one concrete result and why the user needs it.
+Necessity: requested requirement or evidenced prerequisite this slice serves;
+  for additional workers, expected benefit after coordination and integration costs.
 Ownership: exact writable paths, or read-only question; explicit exclusions.
 Parent: requirements, coordination, independent audit, and acceptance.
 Other workers: concurrent execution scopes and shared resources to avoid.
@@ -30,7 +32,7 @@ Evidence: verified facts with file/line or URL/version/date; label hypotheses.
 Question: assumptions to challenge, plausible alternative, known unknowns.
 Deliverable: exact artifact, patch, or finding format.
 Acceptance: observable behavior/checks, edge cases, evidence required.
-Budget/stop: checkpoint time, total handoff deadline, and named slow commands;
+Budget/stop: proportional checkpoint, expected handoff time, and named slow commands;
   report process/session ids for running commands. Pause affected work on scope expansion,
   invalid premise, unavailable/rejected required escalation, or missing prerequisite; return evidence
   and continue any independent work still within the assignment.
@@ -62,7 +64,8 @@ For each material claim, record: claim → source/artifact → independent check
 Ask:
 
 - Did workers produce the substantive deliverable and repairs, and did I independently audit them? Parent implementation followed by agent review does not satisfy this workflow.
-- Did I dispatch all useful independent slices up to available capacity and refill slots?
+- Did each assignment justify its coordination cost through faster completion or a material correctness benefit?
+- Which requested requirement or evidenced prerequisite requires each substantive change? Did I defer unrelated discoveries instead of turning them into assignments?
 - What directly establishes the premise? Could this be a different environment, stale index, wrong version, permissions problem, or baseline failure?
 - What would make this conclusion false? Did I actually check that case?
 - Do the cited lines show a reachable defect or merely a suspicious pattern?
@@ -70,4 +73,4 @@ Ask:
 - Can the parent read and modify the delivered artifact through its normal authorized tools?
 - Does the integrated change meet the user's outcome without unrelated modifications?
 
-Stop once the relevant risks and acceptance checks are resolved. Demand sufficient evidence, not repeated ritual checks.
+Stop once the requested outcome, relevant risks, and required checks are resolved. Repeat or broaden verification only for new changes, failures, or unresolved risks. Demand sufficient evidence, not repeated ritual checks.

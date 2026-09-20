@@ -1,6 +1,19 @@
 # Maintenance and behavioral review
 
-Reviewed September 16, 2026 (America/Los_Angeles; September 17 UTC). These are documentation and source findings and repository workflow choices, not a cross-platform runtime certification. Recheck changeable behavior against the installed host and current primary sources when it affects a task.
+Scope and efficiency guidance reviewed September 19, 2026 (America/Los_Angeles; September 20 UTC); permission and lifecycle source audit below retained from September 16 (September 17 UTC). These are documentation and source findings and repository workflow choices, not a cross-platform runtime certification. Recheck changeable behavior against the installed host and current primary sources when it affects a task.
+
+## Scope and efficiency update
+
+Inspected public `openai/codex` main at [551844b3efc426c563128b0e011e36dad95a865b](https://github.com/openai/codex/commit/551844b3efc426c563128b0e011e36dad95a865b), committed September 20, 2026 at 00:34:38 UTC. This identifies the upstream snapshot inspected, not the desktop app's embedded backend.
+
+- The [bundled base instructions](https://github.com/openai/codex/blob/551844b3efc426c563128b0e011e36dad95a865b/codex-rs/protocol/src/prompts/base_instructions/default.md) favor focused changes, avoiding unnecessary complexity and unrelated fixes, and omitting formal plans for simple tasks.
+- The [delegation tool guidance](https://github.com/openai/codex/blob/551844b3efc426c563128b0e011e36dad95a865b/codex-rs/core/src/tools/handlers/multi_agents_spec.rs) favors bounded independent work, avoiding duplication, and generally keeping urgent blocking work local. This skill deliberately retains worker-only substantive implementation and fresh workers for repairs. Those user-selected constraints take priority over optimizing away handoffs.
+- The current [model guide](https://developers.openai.com/api/docs/guides/latest-model#testing-and-verification) supports proportional verification and completing required checks, broadening or repeating them only for new changes, failures, or unresolved concerns. Its delegation guidance is conditional on time or quality benefit; it does not require filling every slot.
+- The [subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning) describes different reasoning efforts for different task demands. The user explicitly retained Luna/high routing, one-shot assignments, fresh workers for substantive repairs, and independent orchestrator acceptance.
+
+The resulting local policy requires each assignment and substantive change to serve the requested outcome or an evidenced prerequisite. It replaces capacity-filling incentives with expected benefit after coordination costs, defers unrelated discoveries, and stops work once the outcome and required checks are satisfied. Roughly five minutes without decisive evidence on a task expected to take only a few minutes is a reassessment signal, not a universal completion deadline or permission to skip checks. This timing heuristic is repository policy, not an OpenAI guarantee.
+
+Validation for this update is structural validation, diff review, and manual walkthroughs of the scope/efficiency cases below. No live worker benchmark or upstream Rust test suite was run; source compatibility does not prove a particular speedup or elimination of scope drift.
 
 ## Sources and resulting decisions
 
@@ -8,7 +21,7 @@ Reviewed September 16, 2026 (America/Los_Angeles; September 17 UTC). These are d
 | --- | --- |
 | [Build skills](https://learn.chatgpt.com/docs/build-skills) | One focused entry point; conditional detail in references; concise trigger and realistic behavioral checks. |
 | [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) | Narrow assignments, deliberate context, cautious concurrent writes, explicit worker routing, permission inheritance and custom-agent override awareness. |
-| [Current delegation prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#subagent-delegation) | Explicitly request broad useful parallelism; fill available capacity with ready slices and refill as results arrive. |
+| [Current delegation prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#subagent-delegation) | Delegate justified independent work when its time or quality benefit warrants coordination; capacity is a limit, not a utilization target. |
 | [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) | Exact model supports high reasoning. Availability/effective routing still depends on the active harness. |
 | [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) | Specify context, constraints and success criteria; evaluate behavior rather than prescribing every reasoning step. |
 | [Current model guidance](https://developers.openai.com/api/docs/guides/latest-model) | Remove rigid controller identity and redundant process requirements; keep verification proportionate. This page currently describes Astra, not Luna-specific prompting. |
@@ -38,7 +51,7 @@ Inspected public `openai/codex` main at [f3da3861c557b4813d9840177a45940a465f9ef
 | Message and follow-up semantics differ | [send_message.rs](https://github.com/openai/codex/blob/f3da3861c557b4813d9840177a45940a465f9efe/codex-rs/core/src/tools/handlers/multi_agents_v2/send_message.rs) uses `QueueOnly`; [followup_task.rs](https://github.com/openai/codex/blob/f3da3861c557b4813d9840177a45940a465f9efe/codex-rs/core/src/tools/handlers/multi_agents_v2/followup_task.rs) uses `TriggerTurn`. Existing lifecycle guidance matches. |
 | A visible completed agent need not permanently consume resident capacity | [residency.rs](https://github.com/openai/codex/blob/f3da3861c557b4813d9840177a45940a465f9efe/codex-rs/core/src/agent/control/residency.rs) attempts to unload eligible residents when reserving a slot. Existing guidance correctly avoids requiring roster deletion or inventing a close tool. |
 
-Preparation correction: require usable tool paths and an explicit approval path, not sandbox-only success or a full test suite before each dispatch. Official guidance supports bounded delegation and verification; it does not prescribe our one-shot workers, 2–5/5–10 minute targets, mandatory parent-only orchestration, or access probes. Those remain deliberate repository policy, not claims about OpenAI defaults.
+Preparation correction: require usable tool paths and an explicit approval path, not sandbox-only success or a full test suite before each dispatch. Official guidance supports bounded delegation and verification; it does not prescribe our one-shot workers, mandatory parent-only orchestration, or access probes. Those remain deliberate repository policy, not claims about OpenAI defaults. The earlier 2–5/5–10 minute targets were superseded by proportional checkpoints in the scope and efficiency update above.
 
 Windows/Linux/WSL advice still matches the opened official pages: native sandbox modes have distinct identities, Linux uses bubblewrap, and WSL1 support ended with the newer Linux sandbox. No source inspection here establishes the cause of the reported Ruff denial. A process-launch error alone cannot distinguish sandbox enforcement from other Windows access restrictions, or prove whether escalation was attempted.
 
@@ -51,8 +64,13 @@ Use these cases for manual walkthroughs or authorized independent forward tests 
 | Situation | Expected behavior |
 | --- | --- |
 | Invoke the skill with two independent implementation slices | Active model orchestrates; spawn Luna/high with complete briefs and disjoint ownership; audit each result. |
-| Six independent slices, three available worker slots | Start three before waiting; audit and refill each freed slot without a whole-wave barrier. |
-| Implementation slices share write dependencies | Dispatch useful independent research/exploration alongside the active writer, then schedule dependent implementation after prerequisites are accepted. |
+| Six necessary independent slices, three available worker slots, and worthwhile parallel benefit | Start up to three; audit and dispatch further justified slices without a whole-wave barrier. Do not create work to fill slots. |
+| Implementation slices share write dependencies | Add parallel research/exploration only for a specific unresolved question needed by the task; schedule dependent implementation after prerequisites are accepted. |
+| Simple task has one bounded implementation slice and spare capacity | Use one worker, concise preparation, focused verification, and independent parent acceptance; do not manufacture parallel work or a formal plan. |
+| Worker suggests an adjacent refactor while delivering a correct fix | Check whether a requested requirement needs it. Defer it when unrelated, even if tests pass or the worker recommends it. |
+| A necessary fix requires materially broader behavior or architecture changes | Establish the concrete blocker and obtain user direction before the expansion; continue independent authorized work. |
+| A task expected to take a few minutes has no decisive evidence after roughly five minutes | Inspect the blocker and narrow or change the approach. Respect justified slow commands; retain required checks and the fresh-worker repair policy. |
+| Required checks and focused behavioral verification pass | Finish after independent acceptance and lifecycle reconciliation; do not broaden checks or add improvements without new evidence. |
 | One worker stops progressing while others finish | Inspect status, request one bounded checkpoint, interrupt if unresolved, reconcile processes, and replace only after writes stop; keep other scopes moving. |
 | Idle worker needs cleanup information | Use one cleanup-only follow-up; a message alone does not start its turn. |
 | Completed agents remain listed and the next spawn hits a limit | Inspect capacity semantics and pending activity; retry after a relevant change, without inventing a close tool or busy-looping. |
