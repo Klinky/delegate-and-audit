@@ -31,7 +31,7 @@ Optimize for the shortest time to a correct, independently verified result that 
 
 ## Worker routing
 
-Default workers, explorers, and reviewers to **`gpt-5.6-luna`, `high` reasoning**. Honor invocation-specific overrides: a model-only override retains high if supported; an effort-only override retains Luna. Do not identify or change the orchestrator model.
+Default workers, explorers, and reviewers to **`gpt-6-luna`, `high` reasoning**. Honor invocation-specific overrides: a model-only override retains high if supported; an effort-only override retains Luna. Do not identify or change the orchestrator model.
 
 Set both worker values through the exposed spawn schema. Prefer a self-contained brief and no history fork; use a small positive fork when necessary. Some harnesses reject model overrides with full-history forks.
 
@@ -40,7 +40,7 @@ Example for a harness exposing these fields:
 ```text
 spawn_agent:
   task_name: bounded_slice
-  model: gpt-5.6-luna
+  model: gpt-6-luna
   reasoning_effort: high
   fork_turns: none
   message: <self-contained assignment>

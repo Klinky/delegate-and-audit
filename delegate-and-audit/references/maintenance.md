@@ -22,7 +22,7 @@ Validation for this update is structural validation, diff review, and manual wal
 | [Build skills](https://learn.chatgpt.com/docs/build-skills) | One focused entry point; conditional detail in references; concise trigger and realistic behavioral checks. |
 | [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) | Narrow assignments, deliberate context, cautious concurrent writes, explicit worker routing, permission inheritance and custom-agent override awareness. |
 | [Current delegation prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#subagent-delegation) | Delegate justified independent work when its time or quality benefit warrants coordination; capacity is a limit, not a utilization target. |
-| [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) | Exact model supports high reasoning. Availability/effective routing still depends on the active harness. |
+| GPT-6 Luna | The exposed spawn schema supports high reasoning. Availability/effective routing still depends on the active harness. |
 | [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) | Specify context, constraints and success criteria; evaluate behavior rather than prescribing every reasoning step. |
 | [Current model guidance](https://developers.openai.com/api/docs/guides/latest-model) | Remove rigid controller identity and redundant process requirements; keep verification proportionate. This page currently describes Astra, not Luna-specific prompting. |
 | [Sandbox](https://learn.chatgpt.com/docs/sandboxing) | Use the managed execution boundary; diagnose Linux bubblewrap/namespace setup separately from filesystem ownership. |
