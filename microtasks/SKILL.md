@@ -11,9 +11,27 @@ This skill explicitly requests subagent delegation when applied to a task. Discu
 
 When this workflow is selected, use its five-turn reuse and repair rules rather than combining them with another skill's one-shot worker lifecycle.
 
+## Mandatory checkpoint before any delegation
+
+**Before spawning or assigning work to ANY worker, the orchestrator MUST personally inspect the project, resolve its model freshness, and publish both summaries to the user. This includes exploratory, research, review, and read-only workers: do not delegate the initial discovery or freshness lookup. Private notes, tool output, and worker briefs do not satisfy this user-visible requirement.**
+
+Present a concise preflight report containing:
+
+- **Model freshness:** active orchestrator model and identity source, official cutoff date with its source link, today's date/timezone, and the explicit calculation `today - cutoff = N calendar days behind`. State that current primary documentation will be used for version-sensitive decisions. If the documented lookup procedure cannot resolve a value, report the specific failed lookup and resulting uncertainty; never fabricate a date or calculation.
+- **Project and technologies:** purpose, requested outcome, language/runtime versions, major frameworks/libraries and what they do, relevant architecture, and execution target. For AI work, mention relevant frameworks and compute dependencies such as PyTorch and CUDA when verified in the project.
+- **Environment and package management:** virtual environment technology (for example, Python `venv`, uv-managed environments, or Conda), Python/interpreter version, package manager, dependency readiness, and required services. Explicitly distinguish an active environment from one merely present on disk.
+- **Typing, linting, and testing:** name the configured technologies and their roles, such as Ruff for linting, basedpyright for typing, and pytest for testing, plus relevant test scope and known readiness gaps or baseline failures. These are examples, not prescribed defaults: report the tools actually found. State "not configured," "not applicable," or "unverified" as appropriate; do not omit these categories.
+- **Assumptions and first assignments:** material unknowns, evidence paths, and the first proposed microtasks with ownership boundaries so the user can correct mistaken premises.
+
+Keep this user-facing summary at the technology-and-purpose level. It does not require shell commands, activation instructions, executable paths, or per-check working directories. Retain those operational details in the internal environment brief and worker assignments where needed for reliable execution; include them in the user-facing report only when requested or necessary to explain a concrete blocker.
+
+**Give the user a real opportunity to correct this report before delegation.** When an asynchronous question tool is available, ask whether any reported project/environment facts need correcting. Allow a 10-second correction window after publishing the report and asking the question; use that time for independent local inspection or planning, never worker dispatch. A reply confirming the facts or explicitly requesting immediate delegation can end the window early. Incorporate corrections into the report and worker briefs before dispatch. With no reply after the window, explicitly state that you are proceeding on the reported assumptions; silence is not approval for additional scope or permissions. If asynchronous input is unavailable, present the report and correction request in the final response and wait for the user's next message before delegating. Honor requests to pause, and resolve implementation-critical unknowns before dispatching dependent tasks.
+
+This is a correction checkpoint, not a new authorization requirement for already authorized work. Do not repeat it for every microtask. If a model switch or materially different project/toolchain invalidates the report, publish the changed facts before further affected delegation; reopen the correction window for materially changed project/environment assumptions. Reuse a still-current completed checkpoint across continuations and compaction.
+
 ## Establish the environment quickly
 
-Build an evidence-backed working understanding before dispatching implementation. Inspect applicable `AGENTS.md`, repository status, relevant source and interfaces, manifests, lockfiles, setup instructions, and CI. Avoid a whole-repository survey when targeted reads answer the questions. Maintain a compact environment brief with:
+Build an evidence-backed working understanding before the pre-delegation checkpoint. Inspect applicable `AGENTS.md`, repository status, relevant source and interfaces, manifests, lockfiles, setup instructions, and CI. Avoid a whole-repository survey when targeted reads answer the questions. Maintain a compact environment brief with:
 
 - Absolute workspace/cwd, revision and pre-existing edits; project purpose, architecture, relevant entry points, conventions, and ownership boundaries.
 - Languages and runtime versions; OS, shell, and native/WSL/container/remote execution target.
@@ -22,7 +40,7 @@ Build an evidence-backed working understanding before dispatching implementation
 - Effective read/write boundaries, protected paths, shared artifacts, network/approval constraints, cache/temp paths, and known failures.
 - Verified facts and their source paths, unresolved questions, and baseline failures distinguished from tool-launch failures.
 
-The orchestrator owns environment preparation and must understand the brief, even when a narrowly scoped explorer supplies facts. Verify that required tools can execute in the intended environment; reuse existing setup evidence. Avoid redundant installations or concurrent package-manager mutations. Run checks proportional to the task, with the full required checks before final acceptance.
+The orchestrator owns initial discovery and environment preparation. After the checkpoint, narrowly scoped explorers may investigate remaining questions, but the orchestrator must verify and understand their findings before updating the brief. Verify that required tools can execute in the intended environment; reuse existing setup evidence. Avoid redundant installations or concurrent package-manager mutations. Run checks proportional to the task, with the full required checks before final acceptance.
 
 Use the host's supported permission mechanism for necessary blocked commands when policy allows it. Teach workers that mechanism and any known approval requirements; parent success is not blanket worker authorization. Do not bypass rejection, change ACLs, or improvise alternate environments. Keep useful independent work moving when a check is blocked.
 
@@ -30,7 +48,7 @@ Use the host's supported permission mechanism for necessary blocked commands whe
 
 At the start, follow [the model identity and cutoff lookup procedure](references/model-cutoff.md). **Do not report "unknown" merely because the prompt omits a cutoff or names only a model family.** Check current-turn model metadata first; on local Codex, use the current task's latest `turn_context.payload.model` in its rollout if needed. Then open `https://developers.openai.com/api/docs/models/<verified-model-id>` and locate **knowledge cutoff**. The reference gives exact paths, a Windows-safe metadata reader, UI alternatives, and the required fallback searches.
 
-Compute elapsed calendar days as `current_date - cutoff_date` with date arithmetic and announce: "Today is DATE (ZONE); my verified cutoff is DATE, N days behind. I'll consult current official documentation for version-sensitive decisions." Do not hardcode this skill's review date or a model cutoff.
+Compute elapsed calendar days as `current_date - cutoff_date` with date arithmetic and report the dates, subtraction, and result in the mandatory user-visible checkpoint BEFORE any delegation. Announce: "Today is DATE (ZONE); my verified cutoff is DATE; DATE minus DATE = N calendar days behind. I'll consult current official documentation for version-sensitive decisions." Do not hardcode this skill's review date or a model cutoff.
 
 Only after the applicable lookup routes have been tried or found unavailable may you report an unresolved identity or cutoff. Name the failed lookup and distinguish "model identity unresolved" from "official cutoff not published" or "documentation inaccessible." If only a month is documented, report a clearly labeled day range, not a fabricated day. Treat a future cutoff or contradictory metadata as unresolved. Continue work using verified sources; do not ask the user to guess a cutoff.
 
@@ -48,14 +66,33 @@ Keep requested scope fixed. Do not manufacture tasks, refactors, or duplicate im
 
 Continuously maximize outstanding useful, independent microtasks within actual host capacity and user budgets. The normal shape is **one orchestrator to three workers**. Read the exposed limit and whether it includes the parent; reduce the pool when required and use additional capacity only for ready, useful work that can still be audited promptly.
 
-- Dispatch ready assignments immediately. Audit each return promptly and replenish that slot without waiting for an entire wave.
+- Once the mandatory pre-delegation checkpoint is complete, dispatch ready assignments promptly. Audit each return and replenish that slot without waiting for an entire wave. Pool utilization never bypasses the checkpoint.
 - Keep a prepared queue so accepted prerequisites immediately unlock downstream work. Reuse an eligible worker for another microtask or a repair within its five-turn lifetime.
 - Use disjoint write ownership; serialize shared files, lockfiles, generated outputs, ports, databases, and build directories. Parallel read-only work must also tolerate concurrent changes or use a stable snapshot.
 - If fewer independent tasks are ready, state the dependency or capacity constraint briefly. Do not bypass dependencies, duplicate work, or postpone audits to maintain the ratio.
 - While workers run, prepare the next brief, inspect evidence, or audit a different completed task. Never duplicate an active worker's implementation.
 - Workers must not subdelegate. Keep one accountable orchestrator and a flat worker pool.
 
-Use the host's configured worker model and effort unless the user or applicable instructions specify overrides; do not select a new orchestrator model. Verify supported routing fields. Prefer self-contained briefs with no history fork; if overriding model/effort, follow the host's fork restrictions. Do not claim an effective model was verified when only the requested setting is known.
+## Worker model and reasoning
+
+**Default ALL worker agents, including explorers, researchers, implementers, and reviewers, to `gpt-6-luna` with `high` reasoning. Explicitly set both values on EVERY spawn, including replacements. Do not omit routing fields and inherit the orchestrator or host default: that can select GPT-6 Sol instead.** This default does not change the orchestrator's model.
+
+Honor an explicit user or higher-priority routing override. A model-only user override retains `high` reasoning if supported; an effort-only override retains `gpt-6-luna`. Otherwise use Luna/high, not an automatic upgrade based on task difficulty. Narrow a difficult microtask or seek an authorized alternative instead of silently switching to Sol.
+
+For the exposed collaboration schema, use:
+
+```text
+spawn_agent:
+  task_name: <microtask_name>
+  model: gpt-6-luna
+  reasoning_effort: high
+  fork_turns: none
+  message: <complete environment brief and numbered assignment>
+```
+
+Use self-contained briefs with `fork_turns: none`; a small positive history fork is allowed when needed and supported. Do not use an omitted or full-history fork with explicit routing when the host rejects that combination. Adapt field names only to the actual exposed schema.
+
+Check supported settings and any custom-agent configuration that may override the requested model. Record requested routing in the worker ledger; compare effective routing when the host returns it. If Luna/high is unavailable, the host cannot express it, or effective metadata reports Sol or another mismatch, disclose the problem and obtain an authorized fallback before assigning substantive work through that route. Do not claim confirmed Luna execution merely because the spawn accepted the requested fields; missing effective-model metadata is not itself a blocker. Do not ask workers to identify their model. Reused agents retain their original routing unless the host explicitly changes it; every fresh replacement must again request Luna/high.
 
 ## Enforce five-turn worker lifetimes
 

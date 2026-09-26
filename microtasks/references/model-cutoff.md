@@ -77,7 +77,7 @@ Preserve model suffixes and snapshot ids. If an alias/snapshot has no own page, 
 
 Read the current date and timezone from the live clock or trusted current context. Use calendar-date arithmetic, for example PowerShell `([datetime]'YYYY-MM-DD' - [datetime]'YYYY-MM-DD').Days` with today's date first and the verified cutoff second. Do not use elapsed months or an approximate day count.
 
-Report: `Model <id> (identity source); cutoff <date> (official URL); today <date, timezone>; <N> days behind. I will consult current primary documentation for version-sensitive decisions.`
+Before any delegation, publish in the mandatory preflight report: `Model <id> (identity source); cutoff <date> (official URL); today <date, timezone>; <today> - <cutoff> = <N> calendar days behind. I will consult current primary documentation for version-sensitive decisions.` Do not leave the calculation only in tool output or private notes. Complete the project/environment summary and correction opportunity described in `SKILL.md` before dispatching workers.
 
 If only a cutoff month is published, subtract the last and first day of that month to give a day-gap range. If a live model switch occurs, repeat the model lookup; do not retain the preceding turn's cutoff.
 

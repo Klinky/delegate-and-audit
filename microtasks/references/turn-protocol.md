@@ -2,6 +2,8 @@
 
 Use this protocol from first dispatch through retirement. These counters are workflow bookkeeping, not Codex billing units, model messages, tool-call counts, or a host-enforced turn limit.
 
+No dispatch is permitted until the orchestrator has published the model cutoff/day-gap calculation and project/environment/toolchain summary and completed the user correction checkpoint in `SKILL.md`. Record checkpoint completion and corrected assumptions in the ledger; every assignment must use those current facts.
+
 ## Lifecycle mapping
 
 Use only the active host's documented tool names and schemas. In a host exposing the collaboration interface:
@@ -31,6 +33,7 @@ Fill every relevant field with concrete facts; use "not configured" or an explic
 
 ```text
 Worker: <name/id>; microtask: <id>; lifetime turn: <N>/5.
+Requested routing: gpt-6-luna, high reasoning unless explicitly overridden.
 Parent target and message tool: <actual parent id/path and exposed tool>.
 Before work, send the parent: "Acknowledged: turn <N>/5 for <id>."
 Do not wait for a reply after a matching acknowledgment.

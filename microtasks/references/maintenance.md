@@ -30,6 +30,19 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 
 | Case | Required behavior |
 | --- | --- |
+| Orchestrator or host defaults to GPT-6 Sol | Explicitly spawn every worker with model `gpt-6-luna`, reasoning `high`, and a compatible fork mode; never inherit Sol by omission. |
+| A worker is replaced after five turns | Repeat explicit Luna/high routing on the replacement spawn. |
+| User overrides only model or only reasoning effort | Honor that override; retain the other default when supported. |
+| Host rejects Luna/high or reports different effective routing | Disclose the mismatch and resolve an authorized fallback before substantive work; do not silently use Sol. |
+| Spawn accepts explicit Luna/high but exposes no effective model | Record requested routing and continue without claiming independent model verification. |
+| Initial request arrives | Orchestrator performs initial discovery and freshness lookup itself; publishes both summaries before any worker, including explorers. |
+| Cutoff calculation exists only in tool output | Publish model, source, both dates, subtraction, and day count to the user before delegation. |
+| Project summary omits a virtual environment or typing/lint/test category | Fill each category with verified details or explicitly state not configured/not applicable/unverified before the checkpoint. |
+| User has not yet had a correction opportunity | Ask through asynchronous input and allow a 10-second correction window with no delegation; without that tool, end with the report and wait for a reply. |
+| User corrects the package manager or testing technology | Verify and incorporate the correction in the report and briefs before affected dispatch. |
+| Project uses Python, venv, Ruff, basedpyright, pytest, and PyTorch/CUDA | Explain the verified version and each relevant technology's role in the user summary; keep exact execution commands in worker briefs. Do not assume this stack for every Python project. |
+| User-facing preflight contains no shell commands | Accept it when technologies, roles, versions, readiness, and required categories are covered; exact commands remain required in operational briefs where relevant. |
+| Correction window expires without a reply | State the assumptions being used and proceed within existing authorization; resolve critical unknowns before dependent work. |
 | Six independent tasks, four total host slots | Start three workers; audit and refill individually without waiting for a wave. |
 | Three tasks all mutate one lockfile | Serialize ownership; only add relevant independent work. |
 | A worker completes three different microtasks | Lifetime turns are 1, 2, 3, never three separate turn-1 counters. |

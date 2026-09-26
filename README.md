@@ -2,7 +2,7 @@
 
 Codex skills for bounded delegation and skeptical independent verification. Workers perform the substantive work and repairs; the active model directs them and independently audits their results.
 
-Use [microtasks/SKILL.md](microtasks/SKILL.md) for a continuously replenished pool of bite-sized assignments, typically one orchestrator and three workers. It adds environment discovery, knowledge-cutoff freshness disclosure, five-turn worker lifetimes, bilateral turn counters, and repair-and-audit cycles. Workers inherit host routing unless explicitly overridden.
+Use [microtasks/SKILL.md](microtasks/SKILL.md) for a continuously replenished pool of bite-sized assignments, typically one orchestrator and three workers. It adds environment discovery, knowledge-cutoff freshness disclosure, five-turn worker lifetimes, bilateral turn counters, and repair-and-audit cycles. Workers default explicitly to **GPT-6 Luna with high reasoning**, with user overrides supported.
 
 ```text
 Use $microtasks to implement this feature in small, independently verified steps.

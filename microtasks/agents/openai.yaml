@@ -1,4 +1,4 @@
 interface:
   display_name: "Microtasks"
   short_description: "Small worker tasks, five-turn limits, rigorous audits"
-  default_prompt: "Use $microtasks to break this request into small worker assignments, keep useful agents busy, enforce five-turn lifetimes, and independently audit each result."
+  default_prompt: "Use $microtasks with GPT-6 Luna workers at high reasoning to break this request into small assignments, enforce five-turn lifetimes, and independently audit each result."
