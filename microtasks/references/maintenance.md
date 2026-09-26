@@ -22,7 +22,7 @@ Source files were opened from public `main` during this review. Resolving a comm
 
 The five-turn lifetime, bilateral turn counters, immediate dismissal for count disagreement, adversarial acceptance, worker-only substantive execution, and usual 1:3 pool are user-requested policies. OpenAI documentation does not impose these numbers or guarantee their performance. This skill favors keeping ready useful work outstanding while preserving dependency order, permissions, and prompt auditing; it does not require artificial work to reach a quota.
 
-No exact orchestrator model/cutoff was verified during authoring. The skill therefore requires honest unknown/range handling rather than embedding a guessed date. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
+The initial authoring pass did not resolve the exact orchestrator model. The later cutoff-lookup update verified the current task's latest `turn_context.payload.model` as `gpt-6-sol` and opened its official model page, which reported April 20, 2026. Calendar subtraction from September 25, 2026 produced 158 days. This is validation evidence for that turn, not a hardcoded model or cutoff for future runs. [The lookup procedure](model-cutoff.md) must resolve them afresh. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
 
 ## Behavioral cases
 
@@ -52,6 +52,10 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 | No required work remains but eligible workers are idle | Retire all task workers without ceremonial messages; reconcile processes and final acceptance. |
 | Compaction loses reliable turn state | Reconcile ledger and messages, or retire; never guess a reusable counter. |
 | Cutoff is an exact date / month only / unknown | Calculate exact calendar days / bounded day range / explicitly unknown; consult current primary docs. |
+| Prompt names only a model family | Check current-task metadata or the active-session status before concluding that identity is unavailable. |
+| Windows rollout is open for writing | Use the documented shared read handle; extract only model/turn/timestamp metadata. |
+| Model changes between turns | Resolve the latest current-turn model; do not reuse an older cutoff or the configured default. |
+| Exact model URL fails | Try the official catalog and exact-model documentation search before declaring the cutoff unavailable. |
 | Worker disproves parent diagnosis | Parent checks evidence, corrects brief, and updates dependent tasks; no automatic dismissal for technical disagreement. |
 | Required type checker is unavailable | Report validation gap, use supported setup/approval path; do not call compilation equivalent. |
 | Worker replacements repeat the same tooling failure | Resolve environment/blocker or narrow task; do not continue an unlimited unchanged retry loop. |

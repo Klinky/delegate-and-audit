@@ -28,11 +28,11 @@ Use the host's supported permission mechanism for necessary blocked commands whe
 
 ## Acknowledge knowledge freshness
 
-At the start, obtain the current calendar date and timezone from trusted session context or a clock. Establish the orchestrator's knowledge cutoff from explicit model metadata or a current official page for its verified exact model. A family name, release date, or worker's cutoff is insufficient.
+At the start, follow [the model identity and cutoff lookup procedure](references/model-cutoff.md). **Do not report "unknown" merely because the prompt omits a cutoff or names only a model family.** Check current-turn model metadata first; on local Codex, use the current task's latest `turn_context.payload.model` in its rollout if needed. Then open `https://developers.openai.com/api/docs/models/<verified-model-id>` and locate **knowledge cutoff**. The reference gives exact paths, a Windows-safe metadata reader, UI alternatives, and the required fallback searches.
 
 Compute elapsed calendar days as `current_date - cutoff_date` with date arithmetic and announce: "Today is DATE (ZONE); my verified cutoff is DATE, N days behind. I'll consult current official documentation for version-sensitive decisions." Do not hardcode this skill's review date or a model cutoff.
 
-If no exact cutoff is available, explicitly say the cutoff and day gap are unknown. If only a month is documented, report a clearly labeled day range, not a fabricated day. Treat a future cutoff or contradictory metadata as unresolved. Continue work using verified sources; do not ask the user to guess a cutoff.
+Only after the applicable lookup routes have been tried or found unavailable may you report an unresolved identity or cutoff. Name the failed lookup and distinguish "model identity unresolved" from "official cutoff not published" or "documentation inaccessible." If only a month is documented, report a clearly labeled day range, not a fabricated day. Treat a future cutoff or contradictory metadata as unresolved. Continue work using verified sources; do not ask the user to guess a cutoff.
 
 Open current primary documentation for changeable behavior needed by the task, matching installed versions. For Codex orchestration, inspect exposed tools first and consult current OpenAI documentation and available `openai/codex` source when semantics are uncertain. Share verified URLs/version/date with workers. Search snippets and memory are leads, not evidence. Report an unavailable documentation check as a limitation. See [maintenance sources](references/maintenance.md) when refreshing these instructions.
 
