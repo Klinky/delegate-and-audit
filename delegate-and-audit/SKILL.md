@@ -83,6 +83,8 @@ Explain the worker's actual command-level approval mechanism in the brief, using
 
 ## Reconcile ownership
 
+**Slot cleanup is mandatory. The orchestrator MUST dismiss workers after their one-shot assignment and perform the supported lifecycle actions needed to free agent slots. If out of slots and an agent cannot be reused under this skill, it MUST tell that agent to end any remaining active turn, verify termination, and pursue reclamation before reporting a capacity blocker or attempting more spawns. A ledger label alone is insufficient.** Preserve productive workers still executing their original valid assignment. Give every worker the standing end instruction in the brief; for an already idle worker, verify it has ended and use supported close/reclamation controls without waking it merely to repeat that instruction.
+
 Require a final evidence handoff with completed/partial work, unresolved scope, and any running process/session ids. Workers should end their turn rather than wait for new assignments. Before transferring ownership, verify writes have stopped: interrupting an agent may leave its child process running.
 
 Use exposed lifecycle tools and their documented semantics. Interruption or a local "retired" label does not prove closure or capacity release. If cleanup information is missing, make one bounded cleanup request, using a follow-up turn only if needed. Record unresolved cleanup; do not transfer a scope while writes remain possible.

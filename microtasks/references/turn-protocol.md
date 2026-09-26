@@ -51,6 +51,10 @@ Evidence: <source paths, verified docs/version/date, baseline failures, unknowns
 Checkpoint: <expected short handoff time or justified slow command>.
 
 Execute only this microtask. Optimize speed while meeting the acceptance criteria.
+Standing end instruction: after your handoff, or if dismissed, end your current turn
+immediately so the host can reclaim capacity. Do not keep yourself active waiting for
+work. On dismissal, stop substantive work, preserve artifacts, and report running
+process/session ids. Dismissal never authorizes another turn.
 Do not subdelegate, change environment/permissions, expand scope, or undo others' work.
 Challenge a faulty premise with evidence. Report a counter mismatch before work.
 Return changed artifacts, exact checks/results, limitations, and running session ids.

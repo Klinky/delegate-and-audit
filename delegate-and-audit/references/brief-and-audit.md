@@ -40,6 +40,10 @@ Constraints: no subdelegation, unrelated reverts, persistent permission changes,
   environments or worktrees. You share the workspace; respect other writers.
 Checkpoint: promptly report evidence that changes direction or blocks progress.
 Final handoff: evidence below; end the turn and report any remaining activity.
+Standing end instruction: after your handoff, or if dismissed, end your current turn
+  immediately so the host can reclaim capacity. Do not keep yourself active waiting
+  for work. On dismissal, stop substantive work, preserve artifacts, and report
+  running process/session ids. Do not self-start another assignment.
 ```
 
 For a fresh worker, include essential facts directly rather than making it reconstruct the parent's discovery. Link larger source files for targeted inspection. Give relevant failing commands and errors, not just an instruction to "run tests." Never supply secret values.

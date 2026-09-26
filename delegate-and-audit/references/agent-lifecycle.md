@@ -43,7 +43,16 @@ An approval or user-input wait is not a reason to bypass permission controls. Su
 
 ## Capacity recovery
 
-On a spawn limit error, stop repeated spawn attempts. Reconcile the roster, final handoffs, pending messages, and running commands. Finish or stop only relevant stalled work; preserve productive workers. Use the exposed close operation only if its documented semantics apply.
+**Releasing slots is the orchestrator's responsibility, not optional housekeeping.** On a spawn limit error, stop repeated spawn attempts and reconcile the roster. Workers that have delivered their one-shot result, been abandoned after failed recovery, or become otherwise ineligible for reuse MUST be dismissed. Preserve productive workers still executing their original valid assignment.
+
+For each ineligible worker:
+
+1. Record dismissal and cancel further substantive assignments.
+2. If active, send: "You are dismissed. Stop substantive work now, preserve partial artifacts, report running process/session ids, and end your current turn immediately. Do not wait for more instructions." Allow only a short bounded handoff when safe; interrupt immediately for unsafe activity or failure to end promptly. This controls the existing turn. If already idle, verify its standing end instruction has been fulfilled; do not queue a ceremonial message or wake it for a farewell.
+3. Inspect subsequent status. `interrupt_agent` returns the previous status, so its response alone does not prove termination. Reconcile task-owned processes and stop remaining writes through supported controls before transferring ownership. Use a cleanup-only follow-up only when actual missing cleanup evidence requires it under this skill; never merely to elicit a goodbye or drain mail.
+4. If a documented close operation is exposed, use it and verify the result. Otherwise leave the worker settled for host reclamation and verify capacity with the next justified spawn. Do not invent a close API or confuse retirement with slot release.
+
+Current upstream V2 can reclaim eligible settled workers during slot reservation, but pending mailbox items can prevent reclamation. Avoid sending idle workers dismissal or thank-you messages that create pending mail. Do not wait indefinitely while ineligible workers remain active; complete the above cleanup first. A no-close host can still have an unresolved capacity blocker after all supported cleanup has been attempted.
 
 After a relevant state change, attempt one queued spawn. If the limit persists, keep the queue and continue active work; retry only after further capacity evidence changes. Do not require completed agents to disappear from a roster if the harness retains history. Do not assume an execution limit, resident-agent limit, and usage quota are interchangeable.
 
@@ -51,6 +60,6 @@ If no worker can proceed and recovery yields no progress, report the precise cap
 
 ## Completion
 
-Before the user handoff, account for every relevant agent, artifact, and task-owned process. Record accepted/rejected results and unresolved exceptions. Do not claim complete cleanup or full validation without evidence.
+Before the user handoff, dismiss every remaining task worker using the capacity-recovery procedure, account for every artifact and task-owned process, and record accepted/rejected results and unresolved exceptions. Do not claim slots were freed, cleanup completed, or full validation passed without evidence.
 
 These scheduling and recovery rules are repository policy. Tool semantics above were checked against the exposed collaboration schema; refresh them when the harness changes.
