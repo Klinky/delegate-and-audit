@@ -1,6 +1,6 @@
 # Maintenance and behavioral validation
 
-Reviewed September 25, 2026, America/Los_Angeles (September 26 UTC). Refresh current sources when changing orchestration behavior. Public upstream source is not proof of the desktop app's embedded version; active schemas and session instructions control execution.
+Source review: September 25, 2026, America/Los_Angeles (September 26 UTC). Editorial and consistency review: September 27, 2026; no new upstream-source verification is implied. Refresh sources before changing claims about host behavior. Public upstream source is not proof of the desktop app's embedded version; active schemas and session instructions control execution.
 
 ## Primary sources inspected
 
@@ -22,7 +22,7 @@ Source files were opened from public `main` during this review. Resolving a comm
 
 The five-turn lifetime, bilateral turn counters, immediate dismissal for count disagreement, adversarial acceptance, worker-only substantive execution, and usual 1:3 pool are user-requested policies. OpenAI documentation does not impose these numbers or guarantee their performance. This skill favors keeping ready useful work outstanding while preserving dependency order, permissions, and prompt auditing; it does not require artificial work to reach a quota.
 
-The initial authoring pass did not resolve the exact orchestrator model. The later cutoff-lookup update verified the current task's latest `turn_context.payload.model` as `gpt-6-sol` and opened its official model page, which reported April 20, 2026. Calendar subtraction from September 25, 2026 produced 158 days. This is validation evidence for that turn, not a hardcoded model or cutoff for future runs. The current [local lookup procedure](model-cutoff.md) resolves current-turn identity and reuses the matching bundled official cutoff; it no longer requires a network lookup. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
+[The local lookup procedure](model-cutoff.md) resolves current-turn identity and reuses the matching bundled official cutoff. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
 
 ## Behavioral cases
 
@@ -31,11 +31,22 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 | Case | Required behavior |
 | --- | --- |
 | Orchestrator or host defaults to GPT-6 Sol | Explicitly spawn every worker with model `gpt-6-luna`, reasoning `high`, and a compatible fork mode; never inherit Sol by omission. |
-| A worker is replaced after five turns | Repeat explicit Luna/high routing on the replacement spawn. |
+| A worker is replaced after five turns | Repeat the resolved model/reasoning policy, including applicable user overrides, on the replacement spawn. |
 | User overrides only model or only reasoning effort | Honor that override; retain the other default when supported. |
-| Host rejects Luna/high or reports different effective routing | Disclose the mismatch and resolve an authorized fallback before substantive work; do not silently use Sol. |
+| Host rejects requested routing or reports different effective routing | Compare against the resolved policy, including user overrides; disclose a mismatch and resolve an authorized fallback. |
 | Spawn accepts explicit Luna/high but exposes no effective model | Record requested routing and continue without claiming independent model verification. |
 | Initial request arrives | Orchestrator performs initial discovery and freshness lookup itself; publishes both summaries before any worker, including explorers. |
+| Four total host slots are exposed | Target three simultaneous workers plus the orchestrator; do not count the parent as a worker. |
+| A spawn, reuse, repair, or replacement starts | Name the worker and publish the confirmed active count out of three; acknowledge the need to find independent work for unused slots. |
+| A worker returns and becomes idle | Announce its name and decremented active count before redispatch; acknowledge and resolve more work after audit versus retirement and full completion. |
+| A dispatch fails or a final message is duplicated | Do not increment for a failed start or decrement twice; reconcile ambiguous execution states. |
+| A retired worker is still running | Keep it in the active count until its turn stops; reconcile process cleanup separately. |
+| Several workers finish together | Name each returning worker, report the current reconciled count, and state each reuse-or-retire action. |
+| Worker model override persists across replacement | Explicitly request the override; do not revert to Luna/high or treat the override as a mismatch. |
+| Handoff arrives before the worker ends | Announce receipt and current count, then announce the decrement only after completion is confirmed. |
+| Worker finishes turn 5 | Announce its return and active count, retire it, and seek a fresh worker for useful remaining work. |
+| Unused slots but no independent tasks are ready | Explicitly acknowledge the need to find work, inspect remaining scope, and state the concrete constraint without inventing tasks. |
+| All requested work is complete | State that no more assignments are needed and fully reconcile retirement/process cleanup; do not invent work for idle slots. |
 | Cutoff calculation exists only in tool output | Publish model, source, both dates, subtraction, and day count to the user before delegation. |
 | Project summary omits a virtual environment or typing/lint/test category | Fill each category with verified details or explicitly state not configured/not applicable/unverified before the checkpoint. |
 | User has not yet had a correction opportunity | Ask through asynchronous input and allow a 10-second correction window with no delegation; without that tool, end with the report and wait for a reply. |
@@ -64,7 +75,7 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 | Host exposes V2 only but public source contains legacy close | Use exposed interruption and retirement; do not call an unavailable close API. |
 | No required work remains but eligible workers are idle | Retire all task workers without ceremonial messages; reconcile processes and final acceptance. |
 | Compaction loses reliable turn state | Reconcile ledger and messages, or retire; never guess a reusable counter. |
-| Cutoff is an exact date / month only / unknown | Calculate exact calendar days / bounded day range / explicitly unknown; consult current primary docs. |
+| Cutoff is an exact date / month only / missing locally | Report exact calendar days / a bounded day range / the specific local gap. A missing cutoff does not block the checkpoint or trigger online lookup. |
 | Prompt names only a model family | Check current-task metadata or the active-session status before concluding that identity is unavailable. |
 | Windows rollout is open for writing | Use the documented shared read handle; extract only model/turn/timestamp metadata. |
 | Model changes between turns | Resolve the latest current-turn model; do not reuse an older cutoff or the configured default. |
@@ -79,9 +90,7 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 
 Structural validation and scenario walkthroughs do not establish runtime performance or enforce counters mechanically. The orchestrator must maintain and verify the protocol during use.
 
-Authoring validation: the bundled `quick_validate.py` passed; UI metadata and local reference links passed checks; an independent read-only agent walked through pool replenishment, repeated repair, lifetime turn 5, counter disagreement, interrupted background writes, unknown cutoff, and ambiguous follow-up dispatch without finding a substantive contradiction. This was a scenario review, not a live five-turn execution benchmark.
-
-Precommit review found and corrected an acknowledgment-delivery gap, clarified recovery after an acknowledged interruption without a final handoff, and made worker turn termination explicit. Independent targeted re-review found no remaining actionable inconsistencies. Both repository skills passed structural validation, UI metadata and local-link checks; the existing `delegate-and-audit` skill was unchanged.
+Earlier authoring passes included structural checks and independent scenario reviews, not a live five-turn execution benchmark. Re-run structural checks and affected behavioral cases after edits; historical validation does not validate later changes.
 
 ## Offline model reference bundle
 

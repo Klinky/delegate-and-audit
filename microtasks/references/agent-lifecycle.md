@@ -26,6 +26,8 @@ Never substitute task archival, deleting transcripts, editing Codex databases, o
 
 Execution status, lifetime turn count, audit decision, process ownership, and available capacity are separate facts. An accepted result can come from a retired worker; a completed worker can have rejected output.
 
+Publish state changes using [the utilization event protocol](turn-protocol.md#utilization-announcements). Retirement removes a worker from the reusable pool immediately, but from the active-working count only after its turn stops. Process cleanup remains a separate requirement.
+
 ## Dismiss a worker
 
 Apply this sequence on turn exhaustion, explicit counter disagreement, unrecoverable protocol failure, abandonment after bounded stall recovery, or final task cleanup. Healthy workers below five turns remain reusable while ready work exists.

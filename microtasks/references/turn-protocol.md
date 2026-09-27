@@ -2,7 +2,7 @@
 
 Use this protocol from first dispatch through retirement. These counters are workflow bookkeeping, not Codex billing units, model messages, tool-call counts, or a host-enforced turn limit.
 
-No dispatch is permitted until the orchestrator has published the model cutoff/day-gap calculation and project/environment/toolchain summary and completed the user correction checkpoint in `SKILL.md`. Record checkpoint completion and corrected assumptions in the ledger; every assignment must use those current facts.
+Before dispatch, complete the preflight and correction checkpoint in [SKILL.md](../SKILL.md), including the model cutoff calculation or the specific local evidence gap. Record checkpoint completion and corrected assumptions in the ledger; every assignment must use those current facts.
 
 ## Lifecycle mapping
 
@@ -26,6 +26,38 @@ Record a dispatch as pending before calling a tool. A confirmed start consumes t
 Persist the ledger in working notes or a permitted task-state file; after compaction reconcile it with tool state and handoffs before reuse. Do not reset lifetime counts because context was compacted. Track execution, acceptance, and capacity separately.
 
 If an acknowledged turn is interrupted before its final report, retain that consumed turn and use observable artifacts/process state for the recovery decision. A cleanup-only next turn may inspect or stop known task-owned processes; do not begin conflicting edits until writes have stopped. After retirement or turn 5, the orchestrator must reconcile or stop task-owned processes through supported tools without reactivating that worker. If process ownership cannot be established, block the affected scope and report it.
+
+## Utilization announcements
+
+The target is three simultaneously working agents plus the orchestrator. Record the effective limit and the names of workers executing assigned turns. Historical roster size and resident slots are not the active-working count. Report unresolved task-owned processes separately and preserve their ownership boundaries even after their worker becomes idle.
+
+For every spawn or follow-up, announce the named assignment and `turn N/5` before dispatch. Count it as active only after a confirmed start; then immediately publish the updated `N of 3 agents actively working`. A pending or ambiguous dispatch gets a pending statement with the last confirmed count, not a fabricated increment. Reconcile status before retrying. If the effective limit differs from three under the capacity rules in `SKILL.md`, explain and use that denominator consistently.
+
+For every completed handoff, reconcile that the worker ended its turn, remove it from the active count once, and immediately publish the agent name and new count before another dispatch. If the handoff arrives while the worker is still running, acknowledge receipt, report the current count and that it is finishing, then publish the decrement when completion is confirmed. Partial progress and repeated/late handoffs do not decrement again. If several workers complete together, one commentary message may name each returning worker, report the reconciled current count, and state each reuse-or-retire action. Do not present intermediate historical counts as the current count. Interruptions and failures also require reconciling the count; a retirement label does not imply a running turn has stopped.
+
+Each return announcement must explicitly acknowledge the need to either give that worker more work after audit or ask it to retire and fully finish. Resolve that choice after audit: announce the next numbered assignment, or announce retirement and perform the lifecycle procedure. State a concrete pending audit/prerequisite if the choice cannot yet be resolved. Never schedule turn 6; explicitly retire an exhausted worker and use a fresh one for remaining work.
+
+Whenever a dispatch or return leaves unused slots while required work remains, explicitly say additional independent tasks must be found for those slots, then examine the ready queue and requested scope. Dispatch available work promptly. If fewer than three tasks can safely run, state the actual dependency, ownership conflict, or lack of parallel work. Do not manufacture extra scope. If the task is complete, acknowledge that no more assignments are needed and finish retirement/cleanup instead.
+
+Example confirmed event sequence (each line is user-visible):
+
+```text
+I have sent work to agent parser — turn 1/5 — microtask X.
+I have 1 of 3 agents actively working. I need to find additional independent
+tasks for the other 2 agents; I will check the ready queue now.
+
+I received work from agent parser; it is now idle.
+I have 0 of 3 agents actively working. I need to either give parser more work
+after auditing this result or ask it to retire and fully finish.
+I need to find independent tasks for the 3 available slots; first I will audit X
+to determine which dependent tasks are ready.
+
+Parser's result passed audit. I have sent it microtask Y at turn 2/5.
+I have 1 of 3 agents actively working. I need to find additional independent
+tasks for the other 2 agents; the remaining tasks currently depend on Y.
+```
+
+The standing end instruction below tells every worker to finish its turn fully after each handoff. When retiring a still-active worker, explicitly ask it to retire and end, then verify state and process cleanup. For an already idle worker, verify turn completion and any remaining processes, record permanent retirement, and use a supported close operation if available without reactivating it for a ceremonial response. See [the dismissal procedure](agent-lifecycle.md#dismiss-a-worker).
 
 ## Assignment
 
@@ -58,9 +90,13 @@ Checkpoint: <expected short handoff time or justified slow command>.
 Execute only this microtask. Optimize speed while meeting the acceptance criteria.
 Standing end instruction: after your handoff, or if dismissed, end your current turn
 immediately so the host can reclaim capacity. Do not keep yourself active waiting for
-work. On dismissal, stop substantive work, preserve artifacts, and report running
-process/session ids. Dismissal never authorizes another turn.
-Do not subdelegate, change environment/permissions, expand scope, or undo others' work.
+work. If the orchestrator chooses retirement, retire from this task and fully finish:
+stop substantive work, preserve artifacts, report running process/session ids,
+and end your current turn. Never wait for a farewell or reactivate yourself.
+Dismissal never authorizes another turn.
+Do not subdelegate, change the agreed environment or permissions, expand scope,
+or undo others' work. Use the supplied approval mechanism for necessary blocked
+commands within the assignment; do not bypass a rejection.
 Challenge a faulty premise with evidence. Report a counter mismatch before work.
 Return changed artifacts, exact checks/results, limitations, and running session ids.
 End with "Completed turn <N>/5. Next turn: <N+1>/5."
