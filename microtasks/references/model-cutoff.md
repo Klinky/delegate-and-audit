@@ -1,6 +1,6 @@
-# Determine the orchestrator's model and knowledge cutoff
+# Determine model identity and cutoff from local references
 
-Perform this lookup before the freshness announcement. Resolve two separate facts: the model selected for the **current orchestrator turn**, and the cutoff published for that model. Do not stop at a family label such as "GPT-6" when current-turn metadata is accessible.
+Perform this local lookup before the freshness announcement. Resolve the model selected for the **current orchestrator turn** and the cutoff in its bundled official Markdown. Also consult the matching document for every distinct planned worker model. Do not stop at a family label such as "GPT-6" when current-turn metadata is accessible. No web search or download is required or permitted solely for cutoff discovery during normal execution.
 
 ## 1. Identify the current model
 
@@ -55,36 +55,28 @@ If the current record is not yet persisted, retry once after a normal task step;
 
 `<Codex home>/config.toml`, project `.codex/config.toml`, profiles, and model caches can identify configured defaults or candidate ids. They do **not** prove the current turn's selection. Do not claim the default is active without corroboration. Likewise, a model-picker choice is the configured selection, not proof of an undocumented backend alias mapping.
 
-## 2. Open the model's official cutoff field
+## 2. Read only the matching bundled model documents
 
-For an exact OpenAI model id, open:
+Open `models/<exact-model-id>.md` relative to this reference. Locate **knowledge cutoff** under the model details. Read other sections only when useful for the task. The [bundle index](models/index.md) lists coverage; [manifest.json](models/manifest.json) records each original URL, retrieval time, extracted cutoff text, and content hash. Cite the local document as the evidence used; an original source URL does not mean you fetched it during this run.
 
-`https://developers.openai.com/api/docs/models/<model-id>`
+For the orchestrator, use the verified current-turn model ID. For workers, use the explicit requested routing and record it as requested until effective metadata confirms it. Consult each distinct worker model's document once, including replacements or user overrides using a different model. Pass the absolute local document path and cutoff in worker briefs; workers should reference that document for their own model without repeating identity discovery or making cutoff web requests. An accepted spawn request is not independent proof of effective routing.
 
-Find **knowledge cutoff** in the page body near the context-window and maximum-output fields. Read the actual page, not just a search snippet, and retain its URL and lookup date.
+Preserve suffixes and snapshot IDs. Use an exact filename first. If absent, search the bundled Markdown for that exact identifier and use another document only when its content explicitly establishes that snapshot or alias relationship; label the mapping. Do not strip a suffix and assume the base model's cutoff applies. Mutable aliases reflect the saved documentation as of its retrieval date, not a verified present-day backend mapping.
 
-Examples of exact pages, not default model choices:
-
-- [GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol)
-- [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)
-- [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)
-
-If the direct URL fails or redirects to a generic guide, open the [official model catalog](https://developers.openai.com/api/docs/models) and follow the exact model's link. Then search official documentation for `site:developers.openai.com/api/docs/models "<model-id>" "knowledge cutoff"` and open the matching result; also check the corresponding `platform.openai.com/docs/models` page if necessary. Do not interpret one failed URL as absence of a published cutoff.
-
-Preserve model suffixes and snapshot ids. If an alias/snapshot has no own page, use a base-model date only when official documentation establishes that mapping or applicability; label it accordingly. Never substitute the newest model, the worker model, a model release date, or a remembered cutoff. If the provider is not OpenAI, use that provider's primary model documentation.
+Reuse the reference and cutoff for the same model across turns, worker replacements, and compaction. If the model changes, select its matching local document. These are official documentation snapshots, not guarantees of current account availability, host capabilities, pricing, or routing. Active tool schemas control execution. Verify changeable task-specific facts separately when needed; that does not require re-fetching the cutoff.
 
 ## 3. Calculate and report
 
-Read the current date and timezone from the live clock or trusted current context. Use calendar-date arithmetic, for example PowerShell `([datetime]'YYYY-MM-DD' - [datetime]'YYYY-MM-DD').Days` with today's date first and the verified cutoff second. Do not use elapsed months or an approximate day count.
+Read the current date and timezone from the live clock or trusted current context. Use calendar-date arithmetic, for example PowerShell `([datetime]'YYYY-MM-DD' - [datetime]'YYYY-MM-DD').Days` with today's date first and the verified cutoff second.
 
-Before any delegation, publish in the mandatory preflight report: `Model <id> (identity source); cutoff <date> (official URL); today <date, timezone>; <today> - <cutoff> = <N> calendar days behind. I will consult current primary documentation for version-sensitive decisions.` Do not leave the calculation only in tool output or private notes. Complete the project/environment summary and correction opportunity described in `SKILL.md` before dispatching workers.
+Before delegation, report: `Orchestrator <id> (identity source); bundled cutoff <date> (local source); today <date, timezone>; <today> - <cutoff> = <N> calendar days behind.` Also state each distinct planned worker model and its bundled cutoff, labeled as requested routing where execution is not yet verified. Include the bundle retrieval date when it matters, particularly for mutable aliases. Complete the project/environment summary and correction opportunity described in `SKILL.md` before dispatching workers.
 
-If only a cutoff month is published, subtract the last and first day of that month to give a day-gap range. If a live model switch occurs, repeat the model lookup; do not retain the preceding turn's cutoff.
+If only a cutoff month is documented, subtract the last and first day of that month to give a day-gap range. Treat a future cutoff or contradictory evidence as unresolved rather than computing a misleading result.
 
-## 4. Unknown is the last resort
+## 4. Handle local gaps without a network detour
 
-After checking available identity sources and the official page/catalog/search routes, state exactly what remains missing and which checks failed or were unavailable. Distinguish unavailable model identity, unpublished cutoff, inaccessible documentation, and conflicting evidence. Keep any known facts: a verified model id with an unavailable cutoff should still be named. Do not turn an inaccessible metadata surface into a claim that the model's cutoff is unpublished.
+After checking available local identity sources and the matching bundled references, state the specific limitation: model identity unresolved, model document not bundled, cutoff absent from bundled document, or conflicting evidence. A missing local document does not mean OpenAI has not published the cutoff. Keep any verified model ID and continue the task without fabricating a date or calculation. Do not ask the user to guess a cutoff.
 
-Continue the requested work using current primary documentation. Ask for the selected model only if it materially affects the task and automatic lookup cannot resolve it; do not ask the user to supply a cutoff that official sources can provide.
+Do not open the online catalog, search the web, or download model pages as a fallback during normal skill execution. Refresh or expand the bundle only as an explicit skill-maintenance task. Download official `https://developers.openai.com/api/docs/models/<model-id>.md` documents, validate their identities and cutoff fields, and update the manifest and index together. Preserve the original document content and record its retrieval time; do not substitute a skill review date or model release date for a cutoff.
 
-Official interface references: [session `/status`](https://learn.chatgpt.com/docs/developer-commands) and [desktop model selection](https://learn.chatgpt.com/docs/models).
+The local bundle workflow is a user-requested skill policy, not an official Codex self-introspection API. Official interface references: [session `/status`](https://learn.chatgpt.com/docs/developer-commands) and [desktop model selection](https://learn.chatgpt.com/docs/models).

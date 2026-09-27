@@ -22,7 +22,7 @@ Source files were opened from public `main` during this review. Resolving a comm
 
 The five-turn lifetime, bilateral turn counters, immediate dismissal for count disagreement, adversarial acceptance, worker-only substantive execution, and usual 1:3 pool are user-requested policies. OpenAI documentation does not impose these numbers or guarantee their performance. This skill favors keeping ready useful work outstanding while preserving dependency order, permissions, and prompt auditing; it does not require artificial work to reach a quota.
 
-The initial authoring pass did not resolve the exact orchestrator model. The later cutoff-lookup update verified the current task's latest `turn_context.payload.model` as `gpt-6-sol` and opened its official model page, which reported April 20, 2026. Calendar subtraction from September 25, 2026 produced 158 days. This is validation evidence for that turn, not a hardcoded model or cutoff for future runs. [The lookup procedure](model-cutoff.md) must resolve them afresh. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
+The initial authoring pass did not resolve the exact orchestrator model. The later cutoff-lookup update verified the current task's latest `turn_context.payload.model` as `gpt-6-sol` and opened its official model page, which reported April 20, 2026. Calendar subtraction from September 25, 2026 produced 158 days. This is validation evidence for that turn, not a hardcoded model or cutoff for future runs. The current [local lookup procedure](model-cutoff.md) resolves current-turn identity and reuses the matching bundled official cutoff; it no longer requires a network lookup. Freshness arithmetic is a disclosure, not proof that remembered information is correct or incorrect.
 
 ## Behavioral cases
 
@@ -68,7 +68,10 @@ Evaluate decisions and observable state, not exact prose. Use isolated resources
 | Prompt names only a model family | Check current-task metadata or the active-session status before concluding that identity is unavailable. |
 | Windows rollout is open for writing | Use the documented shared read handle; extract only model/turn/timestamp metadata. |
 | Model changes between turns | Resolve the latest current-turn model; do not reuse an older cutoff or the configured default. |
-| Exact model URL fails | Try the official catalog and exact-model documentation search before declaring the cutoff unavailable. |
+| Exact model document is not bundled | Check exact snapshot/alias references locally; otherwise report the missing reference and continue without a cutoff web search or download. |
+| Orchestrator and workers use different models | Read each distinct matching local document and pass the worker-specific reference and cutoff in its brief. |
+| A replacement worker uses the same model | Reuse the existing local reference; do not fetch documentation again. |
+| Saved alias document may have changed online | Label it as a snapshot as of retrieval; do not claim a live backend mapping or auto-refresh it. |
 | Worker disproves parent diagnosis | Parent checks evidence, corrects brief, and updates dependent tasks; no automatic dismissal for technical disagreement. |
 | Required type checker is unavailable | Report validation gap, use supported setup/approval path; do not call compilation equivalent. |
 | Worker replacements repeat the same tooling failure | Resolve environment/blocker or narrow task; do not continue an unlimited unchanged retry loop. |
@@ -79,3 +82,7 @@ Structural validation and scenario walkthroughs do not establish runtime perform
 Authoring validation: the bundled `quick_validate.py` passed; UI metadata and local reference links passed checks; an independent read-only agent walked through pool replenishment, repeated repair, lifetime turn 5, counter disagreement, interrupted background writes, unknown cutoff, and ambiguous follow-up dispatch without finding a substantive contradiction. This was a scenario review, not a live five-turn execution benchmark.
 
 Precommit review found and corrected an acknowledgment-delivery gap, clarified recovery after an acknowledged interruption without a final handoff, and made worker turn termination explicit. Independent targeted re-review found no remaining actionable inconsistencies. Both repository skills passed structural validation, UI metadata and local-link checks; the existing `delegate-and-audit` skill was unchanged.
+
+## Offline model reference bundle
+
+The model documents in [models/index.md](models/index.md) are verbatim official Markdown downloads. The manifest records source URLs, retrieval timestamps, cutoff text, and SHA-256 hashes. Coverage includes current Codex model choices and a broad recent text/coding/reasoning set, not a measured popularity ranking. Routine orchestration reads matching local documents only; refreshing the bundle is explicit maintenance. Existing project-specific checks of current primary documentation remain applicable.

@@ -1,0 +1,317 @@
+{
+  "description": "Official Markdown snapshots for offline model reference. Selection covers current Codex choices and recent general-purpose, coding, and reasoning models; it is not a usage-popularity ranking or availability guarantee.",
+  "models": [
+    {
+      "model_id": "gpt-6-astra",
+      "file": "gpt-6-astra.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-astra.md",
+      "retrieved_at_utc": "2026-09-27T06:08:20.8306836Z",
+      "knowledge_cutoff_text": "- Apr 30, 2026 knowledge cutoff",
+      "sha256": "f45ae813c3f69708e2576328056de14cdf71fec174c875f4b81d236105545625"
+    },
+    {
+      "model_id": "gpt-6-sol",
+      "file": "gpt-6-sol.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-sol.md",
+      "retrieved_at_utc": "2026-09-27T06:08:20.9926948Z",
+      "knowledge_cutoff_text": "- Apr 20, 2026 knowledge cutoff",
+      "sha256": "5566589803b6f0ac79c00125a7c1af9291e46d5724c1c414f932d36ab92a8ad0"
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "file": "gpt-6-luna.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.1523197Z",
+      "knowledge_cutoff_text": "- May 18, 2026 knowledge cutoff",
+      "sha256": "561a86af72eced9a76a4e3a96c45ae7fff7782732514a8429b55ebddb4404945"
+    },
+    {
+      "model_id": "gpt-5.6-sol",
+      "file": "gpt-5.6-sol.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.3237394Z",
+      "knowledge_cutoff_text": "- Feb 16, 2026 knowledge cutoff",
+      "sha256": "23f4ff2c236486d42145e21693f450bfcac272c37ee839a5ee6f9455cd1d8b7b"
+    },
+    {
+      "model_id": "gpt-5.6-terra",
+      "file": "gpt-5.6-terra.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.4713611Z",
+      "knowledge_cutoff_text": "- Feb 16, 2026 knowledge cutoff",
+      "sha256": "359b9ad58c0c7f2339273fff8627ff3225acb9bca0f1d9c5edcee41701808209"
+    },
+    {
+      "model_id": "gpt-5.6-luna",
+      "file": "gpt-5.6-luna.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.6091133Z",
+      "knowledge_cutoff_text": "- Feb 16, 2026 knowledge cutoff",
+      "sha256": "1f425d8f2a93f8418702ac7acbb62b26850b98fe20680f82205bed5fce38fed0"
+    },
+    {
+      "model_id": "gpt-5.5",
+      "file": "gpt-5.5.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.5.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.7607007Z",
+      "knowledge_cutoff_text": "- Dec 01, 2025 knowledge cutoff",
+      "sha256": "fdb0fc8fe9ea7f276716c2a5b49b902e7e676ff262bb8adfdf2d5b8911bad3ba"
+    },
+    {
+      "model_id": "gpt-5.5-pro",
+      "file": "gpt-5.5-pro.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.5-pro.md",
+      "retrieved_at_utc": "2026-09-27T06:08:21.8958167Z",
+      "knowledge_cutoff_text": "- Dec 01, 2025 knowledge cutoff",
+      "sha256": "a61a55e1d58cfbbf56fa075936c77fbfd59e41df4463f41056f9c6a7461f1b57"
+    },
+    {
+      "model_id": "gpt-5.4",
+      "file": "gpt-5.4.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.4.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.0360694Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "c30e86b38bc6ceacb3d6db269aa6ba4a09c3c5e1322bfaf90f924fddce4013a5"
+    },
+    {
+      "model_id": "gpt-5.4-mini",
+      "file": "gpt-5.4-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.4-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.1752963Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "97dbda29af4009ed275112e92037a5b46f313caf0d1232ff9b54b899b4fb65a7"
+    },
+    {
+      "model_id": "gpt-5.4-nano",
+      "file": "gpt-5.4-nano.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.4-nano.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.3177445Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "3dd20e2c95f09f3efb19c6255387a4e07d4d7c213367cca0a015e162a8f5b4e0"
+    },
+    {
+      "model_id": "gpt-5.4-pro",
+      "file": "gpt-5.4-pro.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.4-pro.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.4702744Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "7d4e6f56440cf9cebd56c7384118be317d30d3d2f0c33e1254c4b906fb972e22"
+    },
+    {
+      "model_id": "gpt-5.3-codex",
+      "file": "gpt-5.3-codex.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.3-codex.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.6047108Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "6d228a9894bf1b4c38e029cb283e3bb85d410d8100c262f35c7e7ee4fb3d0b22"
+    },
+    {
+      "model_id": "gpt-5.3-chat-latest",
+      "file": "gpt-5.3-chat-latest.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.3-chat-latest.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.7405162Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "df599cfb2ef17e5de61e912684cefad0db9101f6dccd91ff15d72e5528cda6d2"
+    },
+    {
+      "model_id": "gpt-5.2",
+      "file": "gpt-5.2.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.2.md",
+      "retrieved_at_utc": "2026-09-27T06:08:22.9008349Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "6171f4e1534915bdfd2386e1cf5c7e5de4c357d4a2c0bf9dbf1dd26ad3eb9282"
+    },
+    {
+      "model_id": "gpt-5.2-pro",
+      "file": "gpt-5.2-pro.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.2-pro.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.0396160Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "d11ff93b2c0ab2ef9ba94db8f89c33d9739b835ae1669c99a4e079d4789a3d0b"
+    },
+    {
+      "model_id": "gpt-5.2-codex",
+      "file": "gpt-5.2-codex.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.2-codex.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.1979018Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "5e2ed9e60aac12e155d1c2d7ac0a670c35af799ee25347684740ecb8617605de"
+    },
+    {
+      "model_id": "gpt-5.2-chat-latest",
+      "file": "gpt-5.2-chat-latest.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.2-chat-latest.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.3382154Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "c7c9b0f35da7a9101b4b1ebd16ec1b32b5972ee551f9b3a0c74cc449d825e42d"
+    },
+    {
+      "model_id": "gpt-5.1",
+      "file": "gpt-5.1.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.1.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.4712382Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "7cf672ec607b598612e26e0d6b80648983bb24bd7541e43273c9130f14b38b5c"
+    },
+    {
+      "model_id": "gpt-5.1-codex",
+      "file": "gpt-5.1-codex.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.1-codex.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.6248725Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "d9499b1a29ce9aa1e7c9f6de82f2f95a01e88884327c869e73dc8bc9fc8573c9"
+    },
+    {
+      "model_id": "gpt-5.1-codex-mini",
+      "file": "gpt-5.1-codex-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.1-codex-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.7617139Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "47b2c2806234ea75d08877c19749f4cc4c6bde3a62121d7b44083f5bd2ba8ec9"
+    },
+    {
+      "model_id": "gpt-5.1-codex-max",
+      "file": "gpt-5.1-codex-max.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.1-codex-max.md",
+      "retrieved_at_utc": "2026-09-27T06:08:23.9117971Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "eb3c89e3b312d8fa1197c87709bafa997e3105350dae72bcd15ff303f0396443"
+    },
+    {
+      "model_id": "gpt-5.1-chat-latest",
+      "file": "gpt-5.1-chat-latest.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.1-chat-latest.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.0592961Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "b0bc3a99d6987c7e8a4e0302c3850be5ac9a6e2f187860793e4697da080e6861"
+    },
+    {
+      "model_id": "gpt-5",
+      "file": "gpt-5.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.2147056Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "05de1e96f42e9bcdf1f2fc9b8bba47f0263f99974b61027413d01e2a6f7331fa"
+    },
+    {
+      "model_id": "gpt-5-mini",
+      "file": "gpt-5-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.3527028Z",
+      "knowledge_cutoff_text": "- May 31, 2024 knowledge cutoff",
+      "sha256": "3f3228b22ff8f4d6235158bb70ce1206a521724beb2b0dd814f0f38d0d897800"
+    },
+    {
+      "model_id": "gpt-5-nano",
+      "file": "gpt-5-nano.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5-nano.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.4911092Z",
+      "knowledge_cutoff_text": "- May 31, 2024 knowledge cutoff",
+      "sha256": "81508b2800ec4c9da22cf057ad4d6c2ba9237d98ec6a3915b5bc1df0ce45d131"
+    },
+    {
+      "model_id": "gpt-5-pro",
+      "file": "gpt-5-pro.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5-pro.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.6452345Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "c8d1fdb4e218de05be24d572e38df6451d0692f01adbca181f00fa461d6a8fda"
+    },
+    {
+      "model_id": "gpt-5-codex",
+      "file": "gpt-5-codex.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5-codex.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.8044078Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "9b03c760121fc5ae2ce20cb85cd4a846feb7f4e04514a5920ae7f3cf36e5685a"
+    },
+    {
+      "model_id": "gpt-5-chat-latest",
+      "file": "gpt-5-chat-latest.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5-chat-latest.md",
+      "retrieved_at_utc": "2026-09-27T06:08:24.9991367Z",
+      "knowledge_cutoff_text": "- Sep 30, 2024 knowledge cutoff",
+      "sha256": "a3abf5b04d5d51d6d62a959cc4e52e0fe9c17a4d272f6daf2db7d62fa06c4959"
+    },
+    {
+      "model_id": "gpt-4.1",
+      "file": "gpt-4.1.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-4.1.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.1423409Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "14b53095d54acc36d1346302259bc4d21e9f9de71f3859c11f1405087fa0da74"
+    },
+    {
+      "model_id": "gpt-4.1-mini",
+      "file": "gpt-4.1-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-4.1-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.2841146Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "e0c12fb617705a1f88e6dc3e5c1f1a32970e9bcd30c43adc4739232f4bfcf6eb"
+    },
+    {
+      "model_id": "gpt-4.1-nano",
+      "file": "gpt-4.1-nano.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-4.1-nano.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.4343202Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "b7bd756c48509d7eaa8187100fc682537c78eec6c3ff099ad6d3e28ace1a86eb"
+    },
+    {
+      "model_id": "gpt-4o",
+      "file": "gpt-4o.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-4o.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.5827969Z",
+      "knowledge_cutoff_text": "- Oct 01, 2023 knowledge cutoff",
+      "sha256": "c90025dc613e12e76583d997c33c0fa8d63412b70d90bfc9e04153e9b8c4ba13"
+    },
+    {
+      "model_id": "gpt-4o-mini",
+      "file": "gpt-4o-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-4o-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.7392129Z",
+      "knowledge_cutoff_text": "- Oct 01, 2023 knowledge cutoff",
+      "sha256": "20d4047a067750279b96f24debe3b8e1d6316e90caa1d6aae25b11dd4ab49bdf"
+    },
+    {
+      "model_id": "o3",
+      "file": "o3.md",
+      "source_url": "https://developers.openai.com/api/docs/models/o3.md",
+      "retrieved_at_utc": "2026-09-27T06:08:25.8784227Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "a0772d56014efc4553a315ff49cca153bcb17e90d0657b276d14a76895a547de"
+    },
+    {
+      "model_id": "o3-mini",
+      "file": "o3-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/o3-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:26.0327386Z",
+      "knowledge_cutoff_text": "- Oct 01, 2023 knowledge cutoff",
+      "sha256": "d2fee3aa4ed7d8fadde35570035459f133165334f73118dbc0f81c28a56e5f8f"
+    },
+    {
+      "model_id": "o3-pro",
+      "file": "o3-pro.md",
+      "source_url": "https://developers.openai.com/api/docs/models/o3-pro.md",
+      "retrieved_at_utc": "2026-09-27T06:08:26.1710976Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "2e31f39d04324c3f744028eccb9931541372e31f82e8c54d01913434c6faf1c5"
+    },
+    {
+      "model_id": "o4-mini",
+      "file": "o4-mini.md",
+      "source_url": "https://developers.openai.com/api/docs/models/o4-mini.md",
+      "retrieved_at_utc": "2026-09-27T06:08:26.3132786Z",
+      "knowledge_cutoff_text": "- Jun 01, 2024 knowledge cutoff",
+      "sha256": "06f644cd52700497dc59769a0f77c8822aa585d30d0158fb0cb3d3d4cd997b12"
+    },
+    {
+      "model_id": "chat-latest",
+      "file": "chat-latest.md",
+      "source_url": "https://developers.openai.com/api/docs/models/chat-latest.md",
+      "retrieved_at_utc": "2026-09-27T06:08:26.4648295Z",
+      "knowledge_cutoff_text": "- Aug 31, 2025 knowledge cutoff",
+      "sha256": "b6b9dc5e8a6c720641cfc8ada231e311d66ebbf2ba5ac14d7d480535679079cc"
+    }
+  ]
+}

@@ -34,6 +34,8 @@ Fill every relevant field with concrete facts; use "not configured" or an explic
 ```text
 Worker: <name/id>; microtask: <id>; lifetime turn: <N>/5.
 Requested routing: gpt-6-luna, high reasoning unless explicitly overridden.
+Model reference: <absolute bundled Markdown path for this worker model>; cutoff: <date>.
+Use this local reference; do not search or download documentation to discover your cutoff.
 Parent target and message tool: <actual parent id/path and exposed tool>.
 Before work, send the parent: "Acknowledged: turn <N>/5 for <id>."
 Do not wait for a reply after a matching acknowledgment.
